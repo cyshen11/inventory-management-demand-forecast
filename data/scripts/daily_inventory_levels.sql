@@ -1,62 +1,55 @@
--- Step 1: Create a CTE for the initial inventory levels
+DROP TABLE IF EXISTS DailyInventoryLevels;
 CREATE TABLE DailyInventoryLevels AS
-WITH InitialInventory AS (
+WITH MostRecentInventory AS (
   SELECT 
     ProductID,
-    DATE(ModifiedDate) AS InventoryDate,
-    SUM(Quantity) AS InitialQuantity
+    MAX(DATE(ModifiedDate)) AS MostRecentDate,
+    Quantity AS MostRecentQuantity
   FROM ProductInventory
-  GROUP BY ProductID, DATE(ModifiedDate)
+  GROUP BY ProductID
 ),
 
--- Step 2: Create a CTE for daily transaction adjustments
-DailyTransactions AS (
+RelevantTransactions AS (
   SELECT 
-    ProductID,
-    DATE(TransactionDate) AS TransactionDate,
-    SUM(CASE 
-          WHEN TransactionType = 'P' THEN Quantity   -- Positive for purchases (P)
-          ELSE -Quantity                               -- Negative for other transaction types (e.g., sales)
-        END) AS TransactionAdjustment
-  FROM TransactionHistory
-  GROUP BY ProductID, DATE(TransactionDate)
+    th.ProductID,
+    DATE(th.TransactionDate) AS TransactionDate,
+    CASE 
+      WHEN th.TransactionType = 'P' THEN th.Quantity   -- Positive for purchases
+      ELSE -th.Quantity                                -- Negative for other transactions (e.g., sales)
+    END AS Adjustment
+  FROM TransactionHistory th
+  WHERE th.TransactionDate <= (
+    SELECT MAX(DATE(ModifiedDate)) 
+    FROM ProductInventory
+    WHERE ProductID = th.ProductID
+  )
 ),
 
--- Step 3: Generate all possible dates by unioning inventory and transaction dates
-AllDates AS (
-  SELECT DISTINCT DATE(ModifiedDate) AS Date
-  FROM ProductInventory
-  UNION
-  SELECT DISTINCT DATE(TransactionDate) AS Date
-  FROM TransactionHistory
-),
-
--- Step 4: Calculate daily inventory levels
-DailyInventory AS (
+ReverseInventory AS (
   SELECT 
-    ad.Date AS InventoryDate,
-    pi.ProductID,
-    COALESCE(SUM(ii.InitialQuantity), 0) AS InitialQuantity,
-    COALESCE(SUM(dt.TransactionAdjustment), 0) AS DailyTransaction
-  FROM AllDates ad
-  CROSS JOIN (SELECT DISTINCT ProductID FROM ProductInventory) pi
-  LEFT JOIN InitialInventory ii
-    ON pi.ProductID = ii.ProductID AND ad.Date = ii.InventoryDate
-  LEFT JOIN DailyTransactions dt
-    ON pi.ProductID = dt.ProductID AND ad.Date = dt.TransactionDate
-  GROUP BY ad.Date, pi.ProductID
+    t.ProductID,
+    t.TransactionDate,
+    SUM(t.Adjustment) 
+      OVER (PARTITION BY t.ProductID ORDER BY t.TransactionDate DESC) AS CumulativeAdjustment
+  FROM RelevantTransactions t
+  JOIN MostRecentInventory mr
+    ON t.ProductID = mr.ProductID
 ),
 
--- Step 5: Calculate cumulative inventory levels
-DailyCumulativeInventory AS (
+FinalInventory AS (
   SELECT 
-    di.InventoryDate,
-    di.ProductID,
-    SUM(di.InitialQuantity + di.DailyTransaction) 
-      OVER (PARTITION BY di.ProductID ORDER BY di.InventoryDate) AS CumulativeInventory
-  FROM DailyInventory di
-  ORDER BY di.ProductID, di.InventoryDate
+    mr.ProductID,
+    rt.TransactionDate,
+    mr.MostRecentQuantity + rt.CumulativeAdjustment AS CalculatedInventory
+  FROM MostRecentInventory mr
+  JOIN ReverseInventory rt
+    ON mr.ProductID = rt.ProductID
 )
 
-SELECT * FROM DailyCumulativeInventory
-WHERE CumulativeInventory > 0
+SELECT 
+  ProductID,
+  TransactionDate,
+  CalculatedInventory
+FROM FinalInventory
+ORDER BY ProductID, TransactionDate DESC;
+
