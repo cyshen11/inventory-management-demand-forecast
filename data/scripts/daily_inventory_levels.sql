@@ -59,4 +59,4 @@ DailyCumulativeInventory AS (
 )
 
 SELECT * FROM DailyCumulativeInventory
-WHERE CumulativeInventory <> 0
+WHERE CumulativeInventory > 0
