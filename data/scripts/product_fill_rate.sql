@@ -21,7 +21,9 @@ SELECT
   END AS FillRate
 FROM DailyDemand tb1
 LEFT JOIN DailyInventoryLevels tb2
-  ON tb1.OrderDate = tb2.InventoryDate
+  ON 
+    tb1.ProductID = tb2.ProductID
+    AND tb1.OrderDate = tb2.InventoryDate
 ORDER BY tb1.OrderDate, tb1.ProductID
 
 
