@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS OrderFillRate;
+
 CREATE TABLE OrderFillRate AS
 WITH DailyDemand AS (
   SELECT 
@@ -8,28 +9,52 @@ WITH DailyDemand AS (
     tb2.OrderQty AS Demand
   FROM "SalesOrderHeader" tb1
   LEFT JOIN "SalesOrderDetail" tb2
-    ON tb1.SalesOrderId = tb2.SalesOrderId
+    ON tb1.SalesOrderID = tb2.SalesOrderID
+),
+
+LatestInventory AS (
+  SELECT 
+    di.ProductID,
+    di.TransactionDate,
+    di.CalculatedInventory,
+    ROW_NUMBER() OVER (
+      PARTITION BY di.ProductID
+      ORDER BY di.TransactionDate DESC
+    ) AS Rank
+  FROM DailyInventoryLevels di
+  WHERE di.TransactionDate <= (
+    SELECT OrderDate FROM DailyDemand dd WHERE di.ProductID = dd.ProductID
+  )
 ),
 
 DemandAndInventory AS (
   SELECT 
-    tb1.SalesOrderID,
-    tb1.OrderDate,
-    tb1.ProductID,
-    tb1.Demand,
-    COALESCE(SUM(tb2.Quantity), 0) AS CumulativeInventory,
+    dd.SalesOrderID,
+    dd.OrderDate,
+    dd.ProductID,
+    dd.Demand,
+    COALESCE(
+      (SELECT li.CalculatedInventory 
+       FROM LatestInventory li 
+       WHERE dd.ProductID = li.ProductID 
+         AND li.TransactionDate <= dd.OrderDate
+       ORDER BY li.TransactionDate DESC
+       LIMIT 1),
+      0
+    ) AS CalculatedInventory,
     CASE
-      WHEN tb1.Demand > COALESCE(SUM(tb2.Quantity), 0) THEN 1
+      WHEN dd.Demand > COALESCE(
+        (SELECT li.CalculatedInventory 
+         FROM LatestInventory li 
+         WHERE dd.ProductID = li.ProductID 
+           AND li.TransactionDate <= dd.OrderDate
+         ORDER BY li.TransactionDate DESC
+         LIMIT 1),
+        0
+      ) THEN 1
       ELSE 0
     END AS DemandGtInv
-  FROM DailyDemand tb1
-  LEFT JOIN ProductInventory tb2
-    ON tb1.ProductID = tb2.ProductID
-  GROUP BY 
-    tb1.SalesOrderID,
-    tb1.OrderDate,
-    tb1.ProductID,
-    tb1.Demand
+  FROM DailyDemand dd
 )
 
 SELECT 
@@ -41,6 +66,4 @@ SELECT
   END IsOrderFilled
 FROM DemandAndInventory
 GROUP BY SalesOrderID, OrderDate
-ORDER BY SalesOrderID
-
-
+ORDER BY SalesOrderID;

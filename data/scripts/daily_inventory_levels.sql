@@ -17,7 +17,7 @@ RelevantTransactions AS (
       WHEN th.TransactionType = 'P' THEN th.Quantity   -- Positive for purchases
       ELSE -th.Quantity                                -- Negative for other transactions (e.g., sales)
     END AS Adjustment
-  FROM TransactionHistory th
+  FROM (SELECT * FROM TransactionHistory UNION SELECT * FROM TransactionHistoryArchive) th
   WHERE th.TransactionDate <= (
     SELECT MAX(DATE(ModifiedDate)) 
     FROM ProductInventory
