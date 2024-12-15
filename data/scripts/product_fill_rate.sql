@@ -11,36 +11,17 @@ WITH DailyDemand AS (
   GROUP BY tb1.OrderDate, tb2.ProductID
 ),
 
-LatestInventory AS (
-  SELECT 
-    di.ProductID,
-    di.TransactionDate,
-    di.CalculatedInventory,
-    ROW_NUMBER() OVER (
-      PARTITION BY di.ProductID
-      ORDER BY di.TransactionDate DESC
-    ) AS Rank
-  FROM DailyInventoryLevels di
-  WHERE di.TransactionDate <= (
-    SELECT OrderDate FROM DailyDemand dd WHERE di.ProductID = dd.ProductID
-  )
-),
-
 DemandAndInventory AS (
   SELECT 
     dd.OrderDate,
     dd.ProductID,
     dd.Demand,
-    COALESCE(
-        (SELECT CalculatedInventory 
-        FROM LatestInventory li 
-        WHERE dd.ProductID = li.ProductID 
-          AND li.TransactionDate <= dd.OrderDate
-        ORDER BY li.TransactionDate DESC
-        LIMIT 1),
-        0
-    ) AS CalculatedInventory
+    COALESCE(di.CalculatedInventory, 0) AS CalculatedInventory
   FROM DailyDemand dd
+  LEFT JOIN DailyInventoryLevels di
+  ON
+    dd.ProductID = di.ProductID
+    AND dd.OrderDate = di.TransactionDate
 )
 
 SELECT
