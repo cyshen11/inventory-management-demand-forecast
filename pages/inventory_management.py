@@ -11,6 +11,8 @@ st.title("Inventory Management")
 
 if 'product_id' not in st.session_state:
     st.session_state['product_id'] = None
+if 'product_number' not in st.session_state:
+    st.session_state['product_number'] = None
 
 conn = sqlitecloud.connect(st.secrets["CONNECTION_STRING"])
 conn.execute("USE DATABASE adventure_works")
@@ -27,5 +29,6 @@ with warnings.catch_warnings():
     selectbox_week()
     dataframe_orders_not_filled(conn)
 
-    st.subheader(st.session_state['product_number'] + " Daily Inventory Levels")
-    product_daily_inventory_levels_chart(conn)
+    if st.session_state['product_number']:
+        st.subheader(st.session_state['product_number'] + " Daily Inventory Levels")
+        product_daily_inventory_levels_chart(conn)
