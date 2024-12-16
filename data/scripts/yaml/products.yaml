@@ -1,0 +1,24 @@
+config:
+  locale: en_US
+tables:
+  - name: products
+    rows: 100
+    columns:
+      - name: product_id
+        type: id
+      - name: product_name
+        type: product_name
+      - name: category
+        type: category
+      - name: price
+        type: price
+      - name: production_cost
+        type: float_range
+        args:
+          min: 5.0
+          max: 50.0
+      - name: lead_time_days
+        type: integer_range
+        args:
+          min: 1
+          max: 30
