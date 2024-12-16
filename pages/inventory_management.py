@@ -2,6 +2,7 @@ import streamlit as st
 import sqlitecloud
 from components.filters import *
 from components.metrics import *
+from components.bar_charts import *
 import warnings
 
 st.title("Inventory Management")
@@ -15,3 +16,4 @@ with warnings.catch_warnings():
     selectbox_year(conn)
     dynamic_filters_product(conn)
     ytd_order_fill_rate(conn)
+    order_fill_weekly_chart(conn)
