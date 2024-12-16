@@ -59,13 +59,14 @@ def dataframe_products_not_filled(conn, sales_order_id, order_date):
                 AND di.TransactionDate = ?
             LEFT JOIN Product p
                 ON od.ProductID = p.ProductID
+            ORDER BY CalculatedInventory, p.ProductNumber
             -- WHERE od.Demand > COALESCE(di.CalculatedInventory, 0)
         """
         , conn, params=(int(sales_order_id), order_date)
     )
 
     event_product = st.dataframe(
-                        df, 
+                        df[["ProductNumber", "Demand", "CalculatedInventory"]], 
                         on_select="rerun",
                         selection_mode=["single-row"],
                         hide_index=True,
