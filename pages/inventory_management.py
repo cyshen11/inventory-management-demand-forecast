@@ -32,3 +32,5 @@ with warnings.catch_warnings():
     if st.session_state['product_number']:
         st.subheader(st.session_state['product_number'] + " Daily Inventory Levels")
         product_daily_inventory_levels_chart(conn)
+
+    product_ytd_fill_rate(conn)
