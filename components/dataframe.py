@@ -49,6 +49,7 @@ def dataframe_products_not_filled(conn, sales_order_id, order_date):
             )
 
             SELECT 
+                p.ProductID,
                 p.ProductNumber,
                 od.Demand AS Demand,
                 COALESCE(di.CalculatedInventory, 0) AS CalculatedInventory
@@ -58,7 +59,7 @@ def dataframe_products_not_filled(conn, sales_order_id, order_date):
                 AND di.TransactionDate = ?
             LEFT JOIN Product p
                 ON od.ProductID = p.ProductID
-            WHERE od.Demand > COALESCE(di.CalculatedInventory, 0)
+            -- WHERE od.Demand > COALESCE(di.CalculatedInventory, 0)
         """
         , conn, params=(int(sales_order_id), order_date)
     )
@@ -71,4 +72,5 @@ def dataframe_products_not_filled(conn, sales_order_id, order_date):
                     )
     
     if event_product.selection.rows:
+        st.session_state['product_id'] = df.iloc[event_product.selection.rows[0]]["ProductID"]
         st.session_state['product_number'] = df.iloc[event_product.selection.rows[0]]["ProductNumber"]
