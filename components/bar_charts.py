@@ -8,10 +8,13 @@ def order_fill_weekly_chart(conn):
                 CAST(strftime('%W', OrderDate) AS INT) AS WeekNumber, 
                 ROUND(CAST(SUM(IsOrderFilled) AS FLOAT) / COUNT(*), 2) * 100 AS OrderFillRate
             FROM OrderFillRate
+            WHERE strftime('%Y', OrderDate) = ?
             GROUP BY WeekNumber
+            HAVING SUM(IsOrderFilled) > 0
             ORDER BY WeekNumber
         """
-        , conn)
+        , conn, params=(st.session_state["year"],)
+    )
     st.text("Weekly Order Fill Rate")
     st.bar_chart(
         df, 
