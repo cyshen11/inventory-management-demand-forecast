@@ -63,4 +63,12 @@ def dataframe_products_not_filled(conn, sales_order_id, order_date):
         , conn, params=(int(sales_order_id), order_date)
     )
 
-    st.dataframe(df, hide_index=True)
+    event_product = st.dataframe(
+                        df, 
+                        on_select="rerun",
+                        selection_mode=["single-row"],
+                        hide_index=True,
+                    )
+    
+    if event_product.selection.rows:
+        st.session_state['product_number'] = df.iloc[event_product.selection.rows[0]]["ProductNumber"]
