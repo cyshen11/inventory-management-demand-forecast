@@ -2,6 +2,15 @@ import streamlit as st
 import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
+def selectbox_year(conn):
+    df = pd.read_sql(
+        """
+            SELECT DISTINCT strftime('%Y', OrderDate) AS Year FROM SalesOrderHeader
+            ORDER BY Year
+        """
+        , conn)
+    st.sidebar.selectbox("Year", df["Year"])
+
 def dynamic_filters_product(conn):
     df = pd.read_sql(
         """
