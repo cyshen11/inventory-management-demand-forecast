@@ -9,7 +9,7 @@ def selectbox_year(conn):
             ORDER BY Year
         """
         , conn)
-    st.sidebar.selectbox("Year", df["Year"])
+    st.session_state["year"] = st.sidebar.selectbox("Year", df["Year"])
 
 def dynamic_filters_product(conn):
     df = pd.read_sql(

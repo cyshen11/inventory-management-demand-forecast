@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlitecloud
 from components.filters import *
+from components.metrics import *
 import warnings
 
 st.title("Inventory Management")
@@ -13,3 +14,4 @@ with warnings.catch_warnings():
 
     selectbox_year(conn)
     dynamic_filters_product(conn)
+    ytd_order_fill_rate(conn)
