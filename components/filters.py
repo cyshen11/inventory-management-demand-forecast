@@ -30,4 +30,8 @@ def dynamic_filters_product(conn):
     dynamic_filters = DynamicFilters(df, filters=df.columns.tolist())
     dynamic_filters.display_filters(location='sidebar')
 
+def selectbox_week():
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
     
