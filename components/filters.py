@@ -34,4 +34,12 @@ def selectbox_week():
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
+
+def selectbox_product(conn):
+    df = pd.read_sql(
+        """
+            SELECT DISTINCT ProductID FROM Product
+        """
+        , conn)
+    st.session_state["product_id"] = st.selectbox("Select Product", df["ProductID"])
     
