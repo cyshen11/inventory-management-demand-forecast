@@ -1,0 +1,25 @@
+config:
+  locale: en_US
+  python_import:
+    - random
+    - datetime
+tables:
+  - table_name: inventory_daily_snapshot
+    row_count: 36500  # 100 products × 365 days
+    columns:
+      - column_name: snapshot_id
+        data: row_id
+      - column_name: product_id
+        data: random.randint(1, 100)
+      - column_name: snapshot_date
+        data: datetime.date.today() - datetime.timedelta(days=random.randint(0, 365))
+      - column_name: quantity_start_of_day
+        data: random.randint(0, 1000)
+      - column_name: quantity_received
+        data: random.randint(0, 200)
+      - column_name: quantity_shipped
+        data: random.randint(0, 150)
+      - column_name: backorder_quantity
+        data: random.randint(0, 50)
+      - column_name: in_transit_quantity
+        data: random.randint(0, 200)
