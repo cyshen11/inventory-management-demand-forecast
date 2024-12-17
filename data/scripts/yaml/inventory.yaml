@@ -31,3 +31,7 @@ tables:
         data: random.randint(20, 100)
       - column_name: max_capacity
         data: random.randint(1000, 5000)
+      - column_name: holding_cost_per_unit
+        data: round(random.uniform(0.5, 5.0), 2)  # Daily cost per unit in storage
+      - column_name: holding_cost_percentage
+        data: round(random.uniform(0.15, 0.35), 3)  # 15
