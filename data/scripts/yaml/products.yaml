@@ -1,24 +1,20 @@
 config:
   locale: en_US
+  python_import:
+    - random
 tables:
   - name: products
     rows: 100
     columns:
       - name: product_id
-        type: id
+        data: row_id
       - name: product_name
-        type: product_name
+        data: random.choice(["Product A", "Product B", "Product C", "Product D", "Product E"])
       - name: category
-        type: category
+        data: random.choice(["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"])
       - name: price
-        type: price
+        data: random.uniform(29.99, 299.99)
       - name: production_cost
-        type: float_range
-        args:
-          min: 5.0
-          max: 50.0
+        data: random.uniform(5.00, 50.00)
       - name: lead_time_days
-        type: integer_range
-        args:
-          min: 1
-          max: 30
+        data: random.randint(1, 30)
