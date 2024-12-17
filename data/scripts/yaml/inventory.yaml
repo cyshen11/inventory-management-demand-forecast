@@ -1,0 +1,33 @@
+config:
+  locale: en_US
+  python_import:
+    - random
+    - datetime
+tables:
+  - table_name: inventory
+    row_count: 100
+    columns:
+      - column_name: inventory_id
+        data: row_id
+      - column_name: product_id
+        data: random.randint(1, 100)
+      - column_name: warehouse_id
+        data: random.randint(1, 5)
+      - column_name: quantity_on_hand
+        data: random.randint(0, 1000)
+      - column_name: reorder_point
+        data: random.randint(50, 200)
+      - column_name: reorder_quantity
+        data: random.randint(100, 500)
+      - column_name: last_restock_date
+        data: datetime.date.today() - datetime.timedelta(days=random.randint(0, 90))
+      - column_name: last_count_date
+        data: datetime.date.today() - datetime.timedelta(days=random.randint(0, 30))
+      - column_name: bin_location
+        data: f"AISLE-{random.randint(1,20)}-SHELF-{random.randint(1,10)}-BIN-{random.randint(1,5)}"
+      - column_name: status
+        data: random.choice(["In Stock", "Low Stock", "Out of Stock", "On Order"])
+      - column_name: safety_stock
+        data: random.randint(20, 100)
+      - column_name: max_capacity
+        data: random.randint(1000, 5000)
