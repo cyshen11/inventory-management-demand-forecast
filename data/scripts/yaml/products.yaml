@@ -3,18 +3,18 @@ config:
   python_import:
     - random
 tables:
-  - name: products
-    rows: 100
+  - table_name: products
+    row_count: 100
     columns:
-      - name: product_id
+      - column_name: product_id
         data: row_id
-      - name: product_name
+      - column_name: product_name
         data: random.choice(["Product A", "Product B", "Product C", "Product D", "Product E"])
-      - name: category
+      - column_name: category
         data: random.choice(["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"])
-      - name: price
-        data: random.uniform(29.99, 299.99)
-      - name: production_cost
-        data: random.uniform(5.00, 50.00)
-      - name: lead_time_days
+      - column_name: price
+        data: round(random.uniform(29.99, 299.99), 1)
+      - column_name: production_cost
+        data: round(random.uniform(5.00, 50.00), 1)
+      - column_name: lead_time_days
         data: random.randint(1, 30)
