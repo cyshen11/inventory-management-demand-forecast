@@ -3,13 +3,19 @@ import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
 def selectbox_year(conn):
-    df = pd.read_sql(
-        """
-            SELECT DISTINCT strftime('%Y', OrderDate) AS Year FROM SalesOrderHeader
-            ORDER BY Year
-        """
-        , conn)
-    st.session_state["year"] = st.sidebar.selectbox("Year", df["Year"])
+    # Read the orders CSV file
+    df = pd.read_csv('data/csv/orders.csv')
+    
+    # Convert order_date to datetime
+    df['order_date'] = pd.to_datetime(df['order_date'])
+    
+    # Extract year and get unique values
+    unique_years = df['order_date'].dt.year.unique()
+    
+    # Sort years in ascending order
+    unique_years.sort()
+
+    st.session_state["year"] = st.sidebar.selectbox("Year", unique_years)
 
 def dynamic_filters_product(conn):
     df = pd.read_sql(
