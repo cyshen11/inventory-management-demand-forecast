@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
-def selectbox_year(conn):
+def selectbox_year():
     # Read the orders CSV file
     df = pd.read_csv('data/csv/orders.csv')
     
