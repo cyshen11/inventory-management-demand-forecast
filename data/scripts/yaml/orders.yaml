@@ -3,6 +3,7 @@ config:
   python_import:
     - random
     - datetime
+    - numpy
 tables:
   - table_name: orders
     row_count: 10000
@@ -14,6 +15,4 @@ tables:
       - column_name: order_date
         data: datetime.date.today() - datetime.timedelta(days=random.randint(0, 365))
       - column_name: status
-        data: random.choice(["Completed", "Partially Filled", "Unfilled", "Cancelled"])
-      - column_name: order_fill_rate
-        data: random.uniform(0, 1.0)  # Calculated field in real system
+        data: numpy.random.choice(["Completed", "Partially Filled", "Unfilled", "Cancelled"], p=[0.8, 0.1, 0.05, 0.05])

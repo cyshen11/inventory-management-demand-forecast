@@ -1,11 +1,11 @@
 import tablefaker
 
 tables = [
-    # "orders",
+    "orders",
     # "order_items",
     # "products",
     # "inventory",
-    "inventory_daily_snapshot",
+    # "inventory_daily_snapshot",
 ]
 
 for t in tables:
