@@ -9,12 +9,12 @@ tables:
       - column_name: product_id
         data: row_id
       - column_name: product_name
-        data: random.choice(["Product A", "Product B", "Product C", "Product D", "Product E"])
+        data: f"Product {row_id}"
       - column_name: category
         data: random.choice(["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"])
       - column_name: price
         data: round(random.uniform(29.99, 299.99), 1)
       - column_name: production_cost
-        data: round(random.uniform(5.00, 50.00), 1)
+        data: round(random.uniform(5.00, 15.00), 1)
       - column_name: lead_time_days
         data: random.randint(1, 30)

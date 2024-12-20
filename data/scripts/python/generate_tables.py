@@ -1,9 +1,7 @@
 import tablefaker
 
 tables = [
-    "orders",
-    # "order_items",
-    # "products",
+    "products",
     # "inventory",
     # "inventory_daily_snapshot",
 ]
