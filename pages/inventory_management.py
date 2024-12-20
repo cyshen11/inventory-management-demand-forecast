@@ -20,7 +20,7 @@ with warnings.catch_warnings():
     selectbox_year()
     # dynamic_filters_product(conn)
     ytd_order_fill_rate()
-    # order_fill_weekly_chart(conn)
+    order_fill_weekly_chart()
 
     # st.subheader("Orders not filled")
     # selectbox_week()
