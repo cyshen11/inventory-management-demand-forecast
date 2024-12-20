@@ -16,7 +16,7 @@ def ytd_order_fill_rate():
     
     # Calculate YTD fill rate
     total_orders = len(df_ytd)
-    total_filled = len(df_ytd.loc[df_ytd['status'] == 'Completed'])
+    total_filled = len(df_ytd.loc[df_ytd['is_fulfilled'] == True])
     ytd_fill_rate = round(total_filled / total_orders, 2)
 
     col1, col2, col3 = st.columns(3)
