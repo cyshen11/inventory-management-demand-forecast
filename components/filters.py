@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
-def selectbox_year():
+def selectbox_year(col):
     # Read the orders CSV file
     df = pd.read_csv('data/csv/orders.csv')
     
@@ -15,7 +15,7 @@ def selectbox_year():
     # Sort years in ascending order
     unique_years.sort()
 
-    st.session_state["year"] = st.sidebar.selectbox("Year", unique_years)
+    st.session_state["year"] = col.selectbox("Year", unique_years)
 
 def dynamic_filters_product(conn):
     df = pd.read_sql(
@@ -47,6 +47,6 @@ def selectbox_product(col):
     st.session_state["product_number"] = product_number
     st.session_state["product_id"] = df[df["product_number"] == product_number]["product_id"].values[0]
 
-def selectbox_service_level(col):
-    service_level_type = col.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
+def selectbox_service_level():
+    service_level_type = st.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
     st.session_state["service_level_type"] = service_level_type
