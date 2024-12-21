@@ -9,7 +9,7 @@ df_orders_items = pd.read_csv('data/csv/order_items.csv')
 df_orders_items['is_fulfilled'] = df_orders_items['quantity_fulfilled'] == df_orders_items['quantity_ordered']
 
 df_orders = df_orders_items.groupby('order_id').agg({
-    'is_fulfilled': 'max',
+    'is_fulfilled': 'min',
 }).reset_index()
 
 df_orders.index.name = 'id'
