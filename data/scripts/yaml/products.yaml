@@ -20,3 +20,5 @@ tables:
         data: round(random.uniform(5.00, 15.00), 1)
       - column_name: lead_time_days
         data: random.randint(1, 30)
+      - column_name: inventory_holding_cost
+        data: round(random.uniform(0.50, 2.00), 1)
