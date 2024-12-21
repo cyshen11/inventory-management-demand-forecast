@@ -17,7 +17,7 @@ def dataframe_orders_not_filled():
 
     df.columns = ["Order ID", "Order Date"]
 
-    col1, col2 = st.columns([1, 1.5])
+    col1, col2 = st.columns([1, 2])
 
     with col1:
         event = st.dataframe(
@@ -38,22 +38,33 @@ def dataframe_orders_not_filled():
 def dataframe_products_not_filled(order_id):
     order_items_df = pd.read_csv("data/csv/order_items.csv")
     order_items_df = order_items_df.loc[order_items_df['order_id'] == order_id]
-    order_items_df['is_fulfilled'] = order_items_df['quantity_ordered'] == order_items_df['quantity_fulfilled']
+
+    order_items_df['pct_fulfilled'] = order_items_df['pct_fulfilled'] * 100
     
     product_df = pd.read_csv("data/csv/products.csv")
     df = pd.merge(order_items_df, product_df, on='product_id', how='left')
     
-    df = df[["order_id", "product_id", "product_name", "quantity_ordered", "quantity_fulfilled", "is_fulfilled"]]
+    df = df[["order_id", "product_id", "product_name", "quantity_ordered", "quantity_fulfilled", "pct_fulfilled"]]
     
-    df = df.sort_values(by=["is_fulfilled", "product_name"])
+    df = df.sort_values(by=["pct_fulfilled", "product_name"])
 
-    df.columns = ["Order ID", "Product ID", "Product Name", "Quantity Ordered", "Quantity Fulfilled", "Is Fulfilled"]
+    df.columns = ["Order ID", "Product ID", "Product Name", "Quantity Ordered", "Quantity Fulfilled", "% Fulfilled"]
 
     event_product = st.dataframe(
-                        df[["Product Name", "Quantity Ordered", "Quantity Fulfilled"]], 
+                        df[["Product Name", "Quantity Ordered", "Quantity Fulfilled", "% Fulfilled"]], 
                         on_select="rerun",
                         selection_mode=["single-row"],
                         hide_index=True,
+                        column_config={
+                            "% Fulfilled": st.column_config.NumberColumn(
+                                "% Fulfilled",
+                                help="Percentage fulfilled",
+                                min_value=0,
+                                max_value=100,
+                                format="%.0f%%",  # Shows one decimal place with % symbol
+                                width="small"
+                            )
+                        }
                     )
     
     if event_product.selection.rows:

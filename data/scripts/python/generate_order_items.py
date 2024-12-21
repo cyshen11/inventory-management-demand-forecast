@@ -2,7 +2,7 @@ import datetime
 import pandas as pd
 import random
 
-random.seed(43)
+random.seed(42)
 
 row_count = 30000
 
@@ -15,5 +15,6 @@ df = pd.DataFrame(
     }
 )
 df["quantity_fulfilled"] = df['quantity_ordered'].apply(lambda x: x if random.random() < 0.9 else random.randint(0, x))
-df = df[["order_item_id", "order_id", "product_id", "quantity_ordered", "quantity_fulfilled"]]
+df['pct_fulfilled'] = round(df['quantity_fulfilled'] / df['quantity_ordered'], 4)
+df = df[["order_item_id", "order_id", "product_id", "quantity_ordered", "quantity_fulfilled", "pct_fulfilled"]]
 df.to_csv("data/csv/order_items.csv", index=False)
