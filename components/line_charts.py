@@ -16,4 +16,4 @@ def product_daily_inventory_levels_chart():
 
     df = pd.merge(demand_df, inventory_df, on="Day")
 
-    st.line_chart(df, x="Day", y=["quantity_start_of_day", "quantity_ordered", "quantity_fulfilled"])
+    st.line_chart(df, x="Day", y=["quantity_ordered"], y_label="Demand")
