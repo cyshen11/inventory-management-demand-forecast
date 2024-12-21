@@ -14,6 +14,6 @@ df = pd.DataFrame(
         "quantity_ordered": [random.randint(1, 50) for _ in range(row_count)],
     }
 )
-df["quantity_fulfilled"] = df['quantity_ordered'].apply(lambda x: x if random.random() < 0.4 else random.randint(0, x))
+df["quantity_fulfilled"] = df['quantity_ordered'].apply(lambda x: x if random.random() < 0.9 else random.randint(0, x))
 df = df[["order_item_id", "order_id", "product_id", "quantity_ordered", "quantity_fulfilled"]]
 df.to_csv("data/csv/order_items.csv", index=False)
