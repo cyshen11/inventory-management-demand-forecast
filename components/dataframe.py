@@ -50,8 +50,14 @@ def dataframe_products_not_filled(order_id):
 
     df.columns = ["Order ID", "Product ID", "Product Name", "Quantity Ordered", "Quantity Fulfilled", "% Fulfilled"]
 
+    df_display = df[["Product Name", "Quantity Ordered", "Quantity Fulfilled", "% Fulfilled"]]
+
+    def color_coding(row):
+        return ['background-color:rgba(255, 75, 75, 0.1)'] * len(
+            row) if row["% Fulfilled"] < 100 else ['background-color:white'] * len(row)
+
     event_product = st.dataframe(
-                        df[["Product Name", "Quantity Ordered", "Quantity Fulfilled", "% Fulfilled"]], 
+                        df_display.style.apply(color_coding, axis=1), 
                         on_select="rerun",
                         selection_mode=["single-row"],
                         hide_index=True,
