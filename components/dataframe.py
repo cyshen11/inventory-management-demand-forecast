@@ -26,7 +26,7 @@ def dataframe_orders_not_filled():
                 selection_mode=["single-row"],
                 hide_index=True,
             column_config={
-                "order_id": st.column_config.TextColumn("Order ID")
+                "Order ID": st.column_config.TextColumn("Order ID")
             }
         )
 
