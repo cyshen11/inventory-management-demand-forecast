@@ -44,5 +44,7 @@ def selectbox_week():
 def selectbox_product():
     df = pd.read_csv("data/csv/products.csv")
     col1, col2, col3, col4 = st.columns(4)
-    st.session_state["product_number"] = col1.selectbox("Select Product Number", df["product_number"])
+    product_number = col1.selectbox("Select Product Number", df["product_number"])
+    st.session_state["product_number"] = product_number
+    st.session_state["product_id"] = df[df["product_number"] == product_number]["product_id"].values[0]
     

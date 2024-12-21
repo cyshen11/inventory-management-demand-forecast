@@ -28,6 +28,6 @@ with warnings.catch_warnings():
 
     st.subheader("Product Daily Inventory Levels")
     selectbox_product()
-    #     product_daily_inventory_levels_chart(conn)
+    product_daily_inventory_levels_chart()
 
     # product_ytd_fill_rate(conn)
