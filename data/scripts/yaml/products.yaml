@@ -8,6 +8,8 @@ tables:
     columns:
       - column_name: product_id
         data: row_id
+      - column_name: product_number
+        data: f"PRD-{row_id:04d}"
       - column_name: product_name
         data: f"Product {row_id}"
       - column_name: category
