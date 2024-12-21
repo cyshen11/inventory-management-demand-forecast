@@ -26,8 +26,10 @@ with warnings.catch_warnings():
     selectbox_week()
     dataframe_orders_not_filled()
 
-    st.subheader("Product Daily Inventory Levels")
-    selectbox_product()
+    st.subheader("Determine reorder point")
+    col1, col2, col3 = st.columns(3)
+    selectbox_product(col1)
+    selectbox_service_level(col2)
     product_daily_inventory_levels_chart()
 
     # product_ytd_fill_rate(conn)

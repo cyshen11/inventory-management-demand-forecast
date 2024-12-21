@@ -41,10 +41,12 @@ def selectbox_week():
     with col1:
         st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
 
-def selectbox_product():
+def selectbox_product(col):
     df = pd.read_csv("data/csv/products.csv")
-    col1, col2, col3, col4 = st.columns(4)
-    product_number = col1.selectbox("Select Product Number", df["product_number"])
+    product_number = col.selectbox("Select Product Number", df["product_number"])
     st.session_state["product_number"] = product_number
     st.session_state["product_id"] = df[df["product_number"] == product_number]["product_id"].values[0]
-    
+
+def selectbox_service_level(col):
+    service_level_type = col.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
+    st.session_state["service_level_type"] = service_level_type
