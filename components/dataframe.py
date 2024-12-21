@@ -17,7 +17,7 @@ def dataframe_orders_not_filled():
 
     df.columns = ["Order ID", "Order Date"]
 
-    col1, col2 = st.columns([1, 2])
+    col1, col2 = st.columns([1, 1.8])
 
     with col1:
         event = st.dataframe(
@@ -56,23 +56,23 @@ def dataframe_products_not_filled(order_id):
         return ['background-color:rgba(255, 75, 75, 0.1)'] * len(
             row) if row["% Fulfilled"] < 100 else ['background-color:white'] * len(row)
 
-    event_product = st.dataframe(
-                        df_display.style.apply(color_coding, axis=1), 
-                        on_select="rerun",
-                        selection_mode=["single-row"],
-                        hide_index=True,
-                        column_config={
-                            "% Fulfilled": st.column_config.NumberColumn(
-                                "% Fulfilled",
-                                help="Percentage fulfilled",
-                                min_value=0,
-                                max_value=100,
-                                format="%.0f%%",  # Shows one decimal place with % symbol
-                                width="small"
-                            )
-                        }
-                    )
+    # event_product = st.dataframe(
+
+    st.dataframe(
+        df_display.style.apply(color_coding, axis=1), 
+        hide_index=True,
+        column_config={
+            "% Fulfilled": st.column_config.NumberColumn(
+                "% Fulfilled",
+                help="Percentage fulfilled",
+                min_value=0,
+                max_value=100,
+                format="%.0f%%",  # Shows one decimal place with % symbol
+                width="small"
+            )
+        }
+    )
     
-    if event_product.selection.rows:
-        st.session_state['product_id'] = df.iloc[event_product.selection.rows[0]]["ProductID"]
-        st.session_state['product_number'] = df.iloc[event_product.selection.rows[0]]["ProductNumber"]
+    # if event_product.selection.rows:
+    #     st.session_state['product_id'] = df.iloc[event_product.selection.rows[0]]["ProductID"]
+    #     st.session_state['product_number'] = df.iloc[event_product.selection.rows[0]]["ProductNumber"]
