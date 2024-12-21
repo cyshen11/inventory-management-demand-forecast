@@ -1,23 +1,23 @@
 import streamlit as st
 import pandas as pd
 
-def dataframe_orders_not_filled(conn):
-    df = pd.read_sql(
-        """
-            SELECT SalesOrderID, OrderDate FROM OrderFillRate
-            WHERE 
-                strftime('%Y', OrderDate) = ?
-                AND CAST(strftime('%W', OrderDate) AS INT) = ?
-                AND IsOrderFilled = 0
-            ORDER BY SalesOrderID
-        """
-        , conn, params=(
-            st.session_state["year"],
-            st.session_state["week_number"],
-        )
-    )
+def dataframe_orders_not_filled():
+    df = pd.read_csv("data/csv/orders.csv")
+    
+    df['order_date'] = pd.to_datetime(df['order_date'])
+    df['year'] = df['order_date'].dt.year
+    df['week_number'] = df['order_date'].dt.isocalendar().week
 
-    col1, col2 = st.columns(2)
+    df = df.loc[df['year'] == st.session_state['year']]
+    df = df.loc[df['week_number'] == st.session_state['week_number']]
+    df = df.loc[df['is_fulfilled'] == 0]
+
+    df = df[["order_id", "order_date"]]
+    df = df.sort_values(by=["order_id"])
+
+    df.columns = ["Order ID", "Order Date"]
+
+    col1, col2 = st.columns([1, 1.5])
 
     with col1:
         event = st.dataframe(
@@ -26,47 +26,31 @@ def dataframe_orders_not_filled(conn):
                 selection_mode=["single-row"],
                 hide_index=True,
             column_config={
-                "SalesOrderID": st.column_config.TextColumn("SalesOrderID")
+                "order_id": st.column_config.TextColumn("Order ID")
             }
         )
 
     if event.selection.rows:
-        sales_order_id = df.iloc[event.selection.rows[0]]["SalesOrderID"]
-        order_date = df.iloc[event.selection.rows[0]]["OrderDate"]
+        order_id = df.iloc[event.selection.rows[0]]["Order ID"]
         with col2:
-            dataframe_products_not_filled(conn, sales_order_id, order_date)
+            dataframe_products_not_filled(order_id)
 
-def dataframe_products_not_filled(conn, sales_order_id, order_date):
-    df = pd.read_sql(
-        """
-            WITH OrderDetails AS (
-                SELECT 
-                    SalesOrderID,
-                    ProductID,
-                    OrderQty AS Demand
-                FROM "SalesOrderDetail"
-                WHERE SalesOrderID = ?
-            )
+def dataframe_products_not_filled(order_id):
+    order_items_df = pd.read_csv("data/csv/order_items.csv")
+    order_items_df = order_items_df.loc[order_items_df['order_id'] == order_id]
+    order_items_df['is_fulfilled'] = order_items_df['quantity_ordered'] == order_items_df['quantity_fulfilled']
+    
+    product_df = pd.read_csv("data/csv/products.csv")
+    df = pd.merge(order_items_df, product_df, on='product_id', how='left')
+    
+    df = df[["order_id", "product_id", "product_name", "quantity_ordered", "quantity_fulfilled", "is_fulfilled"]]
+    
+    df = df.sort_values(by=["is_fulfilled", "product_name"])
 
-            SELECT 
-                p.ProductID,
-                p.ProductNumber,
-                od.Demand AS Demand,
-                COALESCE(di.CalculatedInventory, 0) AS CalculatedInventory
-            FROM OrderDetails od
-            LEFT JOIN DailyInventoryLevels di
-                ON od.ProductID = di.ProductID
-                AND di.TransactionDate = ?
-            LEFT JOIN Product p
-                ON od.ProductID = p.ProductID
-            ORDER BY CalculatedInventory, p.ProductNumber
-            -- WHERE od.Demand > COALESCE(di.CalculatedInventory, 0)
-        """
-        , conn, params=(int(sales_order_id), order_date)
-    )
+    df.columns = ["Order ID", "Product ID", "Product Name", "Quantity Ordered", "Quantity Fulfilled", "Is Fulfilled"]
 
     event_product = st.dataframe(
-                        df[["ProductNumber", "Demand", "CalculatedInventory"]], 
+                        df[["Product Name", "Quantity Ordered", "Quantity Fulfilled"]], 
                         on_select="rerun",
                         selection_mode=["single-row"],
                         hide_index=True,

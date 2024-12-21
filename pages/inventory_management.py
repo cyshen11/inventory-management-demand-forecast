@@ -22,9 +22,9 @@ with warnings.catch_warnings():
     ytd_order_fill_rate()
     order_fill_weekly_chart()
 
-    # st.subheader("Orders not filled")
-    # selectbox_week()
-    # dataframe_orders_not_filled(conn)
+    st.subheader("Orders not filled")
+    selectbox_week()
+    dataframe_orders_not_filled()
 
     # if st.session_state['product_number']:
     #     st.subheader(st.session_state['product_number'] + " Daily Inventory Levels")
