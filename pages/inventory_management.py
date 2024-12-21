@@ -5,6 +5,7 @@ from components.metrics import *
 from components.bar_charts import *
 from components.dataframe import *
 from components.line_charts import *
+from components.inputs import *
 import warnings
 
 st.title("Inventory Management")
@@ -30,6 +31,7 @@ with warnings.catch_warnings():
     col1, col2, col3 = st.columns(3)
     selectbox_product(col1)
     selectbox_service_level(col2)
+    input_service_level(col3)
     product_daily_inventory_levels_chart()
 
     # product_ytd_fill_rate(conn)
