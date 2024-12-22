@@ -33,7 +33,9 @@ def uncertain_demand(filtered_data):
       \n = **{ss}**
   """)
 
-  avg_sales = calculate_avg_demand(filtered_data)
+  col1, col2, col3 = st.columns(3)
+  input_avg_sales(col1, filtered_data)
+  avg_sales = st.session_state["avg_sales"]
   rop = ss + L * avg_sales
 
   st.info(f"""

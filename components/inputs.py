@@ -17,3 +17,16 @@ def input_avg_lead_time(col):
     time_unit = st.session_state["time_unit"]
 
     st.session_state["avg_lead_time"] = col.number_input(f"Specify Average Lead Time ({time_unit})", value=1.00)
+
+def input_avg_sales(col, df):
+    time_unit = st.session_state["time_unit"]
+    avg_sales = calculate_avg_demand(df)
+
+    if time_unit == "Days":
+      label = "Specify Average Sales per day"
+    elif time_unit == "Weeks":
+      label = "Specify Average Sales per week"
+    elif time_unit == "Months":
+      label = "Specify Average Sales per month"
+
+    st.session_state["avg_sales"] = col.number_input(label, value=avg_sales, step=0.1)
