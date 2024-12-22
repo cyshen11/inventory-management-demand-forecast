@@ -9,6 +9,7 @@ from components.inputs import *
 from components.dataset import *
 from components.eoq import eoq
 from components.rop import rop
+from components.ss_average_max import ss_average_max
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -23,8 +24,9 @@ year = filtered_data['Date'].dt.year.unique().astype(int)[0]
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
 
-    tab1, tab2 = st.tabs(["Basic", "Average - Max Formula"])
-
+    st.subheader("Calculate Safety Stock")
+    tab1, tab2 = st.tabs(["Basic", "Average - Max"])
+    
     with tab1:
         @st.fragment
         def ss_basic():
@@ -33,4 +35,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
             inventory_chart(year)
         
         ss_basic()
+
+    with tab2:
+        ss_average_max()
         

@@ -11,6 +11,7 @@ def product_daily_inventory_levels_chart(df):
     
     st.session_state["demand_per_year"] = df["Order_Demand"].sum()
     st.session_state["avg_demand"] = round(df["Order_Demand"].sum() / 365)
+    st.session_state["max_demand"] = df["Order_Demand"].max()
 
 def inventory_chart(year):
     year = str(year)
