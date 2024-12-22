@@ -1,6 +1,5 @@
 import streamlit as st
 
-@st.fragment
 def eoq():
   col1, col2 = st.columns(2)
   col3, col4 = st.columns(2)
@@ -12,5 +11,6 @@ def eoq():
 
   Q = (2*(D*K)/H)**(1/2)
   Q_rounded = round(Q/lot_size)*lot_size
+  st.session_state["EOQ"] = Q_rounded
 
   st.info(f"EOQ = sqrt(2(DK)/H) = sqrt(2({D} x {K})/{H}) = **{Q_rounded}**")
