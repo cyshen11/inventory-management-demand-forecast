@@ -15,8 +15,6 @@ if 'product_id' not in st.session_state:
     st.session_state['product_id'] = None
 if 'product_number' not in st.session_state:
     st.session_state['product_number'] = None
-if 'dataset' not in st.session_state:
-    st.session_state['dataset'] = Dataset()
 
     # selectbox_year()
     # # dynamic_filters_product(conn)
@@ -27,13 +25,15 @@ if 'dataset' not in st.session_state:
     # selectbox_week()
     # dataframe_orders_not_filled()
 
+data = Dataset().data
+
 st.subheader("Demand Trend")
 col1, col2, col3 = st.columns(3)
-selectbox_product(col1)
-selectbox_year(col2)
+selectbox_product(data, col1)
+selectbox_year(data, col2)
 
 
-product_daily_inventory_levels_chart()
+product_daily_inventory_levels_chart(data)
 
 tab1, tab2, tab3 = st.tabs(["EOQ", "Reorder Point", "Safety Stock"])
 

@@ -2,10 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
-def selectbox_year(col):
-    # Read data
-    df = st.session_state["dataset"].data
-    
+def selectbox_year(df, col):
     # Extract year and get unique values
     unique_years = df['Date'].dt.year.unique().astype(int)
     
@@ -41,9 +38,7 @@ def selectbox_week():
     with col1:
         st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
 
-def selectbox_product(col):
-    # Read data
-    df = st.session_state["dataset"].data
+def selectbox_product(df, col):
     product_code = col.selectbox("Select Product", df["Product_Code"])
     st.session_state["product_code"] = product_code
 

@@ -9,5 +9,8 @@ class Dataset:
   def prepare_data(self, df):
     df['Date'] = pd.to_datetime(df['Date'])
     df = df.loc[df['Date'] == df['Date']]
+    # Convert bracketed numbers to negatives using regex
+    df['Order_Demand'] = df['Order_Demand'].replace('\((\d+)\)', '-\\1', regex=True)
+    df['Order_Demand'] = df['Order_Demand'].astype(int)
     return df
   
