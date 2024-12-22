@@ -1,5 +1,4 @@
 import streamlit as st
-import sqlitecloud
 from components.filters import *
 from components.metrics import *
 from components.bar_charts import *
@@ -7,8 +6,7 @@ from components.dataframe import *
 from components.line_charts import *
 from components.inputs import *
 from components.dataset import *
-from components.eoq import eoq
-from components.rop import rop
+from components.ss_basic import ss_basic
 from components.ss_average_max import ss_average_max
 import warnings
 warnings.filterwarnings("ignore")
@@ -28,13 +26,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Normal Distribution"])
 
     with tab1:
-        @st.fragment
-        def ss_basic():
-            eoq()
-            rop()
-            inventory_chart(year)
-        
-        ss_basic()
+        ss_basic(year)
 
     with tab2:
         ss_average_max()
