@@ -35,10 +35,18 @@ def selectbox_service_level():
     service_level_type = st.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
     st.session_state["service_level_type"] = service_level_type
 
-def selectbox_uncertainty_type():
+def selectbox_uncertainty_type(col):
     uncertainties = [
         "Uncertainty demand",
         "Uncertainty lead time",
         "Uncertainty demand and lead time"
     ]
-    st.selectbox("Select Uncertainty Type", uncertainties)
+    col.selectbox("Select Uncertainty Type", uncertainties)
+
+def selectbox_time_units(col):
+    time_units = [
+        "Days",
+        "Weeks",
+        "Months"
+    ]
+    col.selectbox("Select Time Units", time_units)

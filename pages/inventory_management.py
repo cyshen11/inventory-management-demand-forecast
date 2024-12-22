@@ -40,5 +40,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
         ss_average_max()
 
     with tab3:
-        selectbox_uncertainty_type()
+        col1, col2 = st.columns(2)
+        selectbox_uncertainty_type(col1)
+        selectbox_time_units(col2)
         
