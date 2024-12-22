@@ -4,14 +4,17 @@ from streamlit_dynamic_filters import DynamicFilters
 
 def selectbox_year(col):
     # Read the orders CSV file
-    df = pd.read_csv('data/csv/orders.csv')
+    df = pd.read_csv('data/csv/Historical Product Demand.csv')
     
-    # Convert order_date to datetime
-    df['order_date'] = pd.to_datetime(df['order_date'])
+    # Convert Date to datetime
+    df['Date'] = pd.to_datetime(df['Date'])
     
     # Extract year and get unique values
-    unique_years = df['order_date'].dt.year.unique()
+    unique_years = df['Date'].dt.year.unique().astype(int)
     
+    # Exclude invalid years
+    unique_years = unique_years[unique_years > 0]
+
     # Sort years in ascending order
     unique_years.sort()
 
