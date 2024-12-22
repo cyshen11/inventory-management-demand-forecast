@@ -34,3 +34,11 @@ def selectbox_product(df, col):
 def selectbox_service_level():
     service_level_type = st.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
     st.session_state["service_level_type"] = service_level_type
+
+def selectbox_uncertainty_type():
+    uncertainties = [
+        "Uncertainty demand",
+        "Uncertainty lead time",
+        "Uncertainty demand and lead time"
+    ]
+    st.selectbox("Select Uncertainty Type", uncertainties)

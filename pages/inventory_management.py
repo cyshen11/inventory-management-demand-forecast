@@ -25,8 +25,8 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
 
     st.subheader("Calculate Safety Stock")
-    tab1, tab2 = st.tabs(["Basic", "Average - Max"])
-    
+    tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Normal Distribution"])
+
     with tab1:
         @st.fragment
         def ss_basic():
@@ -38,4 +38,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
 
     with tab2:
         ss_average_max()
+
+    with tab3:
+        selectbox_uncertainty_type()
         
