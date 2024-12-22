@@ -31,3 +31,19 @@ def uncertain_demand(filtered_data):
       \n = {Z} x {sd:.1f} x sqrt({L})
       \n = {ss}
   """)
+
+  time_unit = st.session_state["time_unit"]
+  if time_unit == "Days":
+    avg_sales = st.session_state["avg_demand"]
+  elif time_unit == "Weeks":
+    df = filtered_data[["Date", "Order_Demand"]]
+    df["Week"] = df["Date"].dt.isocalendar().week
+    df = df[["Week", "Order_Demand"]]
+    
+
+  st.info(f"""
+    Reorder Point (ROP)
+          \n = SS + Average Lead Time x Average Sales per day
+          \n = {ss} + {L} x {avg_sales}
+          \n = **{rop}**
+  """)
