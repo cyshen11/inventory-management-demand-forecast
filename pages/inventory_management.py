@@ -22,10 +22,9 @@ filters = st.session_state[dynamic_filters.filters_name]
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
 
-    tab1, tab2 = st.tabs(["EOQ", "SS & ROP"])
+    tab1, tab2 = st.tabs(["Basic", "Average - Max Formula"])
 
     with tab1:
         eoq()
-
-    with tab2:
         rop()
+        

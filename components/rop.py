@@ -11,13 +11,13 @@ def rop():
   ROP = avg_daily_sales * delivery_lead_time + safety_stock
 
   st.info(f"""
-    Safety Stock: 
-      \n = {avg_daily_sales} x {nb_safety_days} 
-      \n = {safety_stock}
+    Safety Stock 
+          = {avg_daily_sales} x {nb_safety_days} 
+          = **{safety_stock}**
   """)
 
   st.info(f"""
-    Reorder Point:
-      \n = {avg_daily_sales} x {delivery_lead_time} + {safety_stock}
-      \n = {ROP}
+    Reorder Point
+          = {avg_daily_sales} x {delivery_lead_time} + {safety_stock} 
+          = **{ROP}**
   """)

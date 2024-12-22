@@ -9,8 +9,4 @@ def eoq():
 
   Q = (2*(D*K)/H)**(1/2)
 
-  st.info(f"""EOQ:
-    \n = sqrt(2(DK)/H)
-    \n = sqrt(2({D} x {K})/{H})
-    \n = {round(Q)}
-  """)
+  st.info(f"EOQ = sqrt(2(DK)/H) = sqrt(2({D} x {K})/{H}) = **{round(Q)}**")
