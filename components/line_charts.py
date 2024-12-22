@@ -10,4 +10,6 @@ def product_daily_inventory_levels_chart(df):
     df = df[["Date", "Order_Demand"]]
 
     st.line_chart(df, x="Date", y=["Order_Demand"], y_label="Order Demand")
+    
     st.session_state["demand_per_year"] = df["Order_Demand"].sum()
+    st.session_state["avg_demand"] = round(df["Order_Demand"].sum() / 365)

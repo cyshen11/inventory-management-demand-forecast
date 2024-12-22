@@ -8,6 +8,7 @@ from components.line_charts import *
 from components.inputs import *
 from components.dataset import *
 from components.eoq import eoq
+from components.rop import rop
 import warnings
 
 st.title("Inventory Management")
@@ -36,7 +37,10 @@ selectbox_year(data, col2)
 
 product_daily_inventory_levels_chart(data)
 
-tab1, tab2, tab3 = st.tabs(["EOQ", "Reorder Point", "Safety Stock"])
+tab1, tab2 = st.tabs(["EOQ", "SS & ROP"])
 
 with tab1:
     eoq()
+
+with tab2:
+    rop()
