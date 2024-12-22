@@ -3,11 +3,8 @@ import pandas as pd
 from streamlit_dynamic_filters import DynamicFilters
 
 def selectbox_year(col):
-    # Read the orders CSV file
-    df = pd.read_csv('data/csv/Historical Product Demand.csv')
-    
-    # Convert Date to datetime
-    df['Date'] = pd.to_datetime(df['Date'])
+    # Read data
+    df = st.session_state["dataset"].data
     
     # Extract year and get unique values
     unique_years = df['Date'].dt.year.unique().astype(int)

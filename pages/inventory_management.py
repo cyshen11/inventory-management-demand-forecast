@@ -6,6 +6,7 @@ from components.bar_charts import *
 from components.dataframe import *
 from components.line_charts import *
 from components.inputs import *
+from components.dataset import *
 import warnings
 
 st.title("Inventory Management")
@@ -14,6 +15,8 @@ if 'product_id' not in st.session_state:
     st.session_state['product_id'] = None
 if 'product_number' not in st.session_state:
     st.session_state['product_number'] = None
+if 'dataset' not in st.session_state:
+    st.session_state['dataset'] = Dataset()
 
     # selectbox_year()
     # # dynamic_filters_product(conn)
