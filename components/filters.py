@@ -14,24 +14,11 @@ def selectbox_year(df, col):
 
     st.session_state["year"] = col.selectbox("Year", unique_years)
 
-def dynamic_filters_product(conn):
-    df = pd.read_sql(
-        """
-            SELECT 
-                pc.Name AS Category,
-                ps.Name AS Subcategory,
-                p.Name AS ProductName,
-                p.ProductNumber AS ProductNumber
-            FROM ProductCategory pc
-            LEFT JOIN ProductSubcategory ps 
-                ON pc.ProductCategoryId = ps.ProductCategoryId
-            LEFT JOIN Product p 
-                ON ps.ProductSubcategoryID = p.ProductSubcategoryID
-            ORDER BY Category, Subcategory, ProductName, ProductNumber
-        """
-        , conn)
-    dynamic_filters = DynamicFilters(df, filters=df.columns.tolist())
-    dynamic_filters.display_filters(location='sidebar')
+def dynamic_filters_product(df):
+    df['Year'] = df['Date'].dt.year
+    dynamic_filters = DynamicFilters(df, filters=['Product_Code', 'Year'])
+    dynamic_filters.display_filters(location='columns', num_columns=2)
+    return dynamic_filters
 
 def selectbox_week():
     col1, col2, col3, col4 = st.columns(4)
@@ -39,7 +26,9 @@ def selectbox_week():
         st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
 
 def selectbox_product(df, col):
-    product_code = col.selectbox("Select Product", df["Product_Code"])
+    products = df["Product_Code"].unique()
+    products.sort()
+    product_code = col.selectbox("Select Product", products)
     st.session_state["product_code"] = product_code
 
 def selectbox_service_level():

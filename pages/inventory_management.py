@@ -13,34 +13,20 @@ import warnings
 
 st.title("Inventory Management")
 
-if 'product_id' not in st.session_state:
-    st.session_state['product_id'] = None
-if 'product_number' not in st.session_state:
-    st.session_state['product_number'] = None
-
-    # selectbox_year()
-    # # dynamic_filters_product(conn)
-    # ytd_order_fill_rate()
-    # order_fill_weekly_chart()
-
-    # st.subheader("Orders not filled")
-    # selectbox_week()
-    # dataframe_orders_not_filled()
-
 data = Dataset().data
 
 st.subheader("Demand Trend")
-col1, col2, col3 = st.columns(3)
-selectbox_product(data, col1)
-selectbox_year(data, col2)
+dynamic_filters = dynamic_filters_product(data)
+filtered_data = dynamic_filters.filter_df()
+filters = st.session_state[dynamic_filters.filters_name]
 
+if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
+    product_daily_inventory_levels_chart(filtered_data)
 
-product_daily_inventory_levels_chart(data)
+    tab1, tab2 = st.tabs(["EOQ", "SS & ROP"])
 
-tab1, tab2 = st.tabs(["EOQ", "SS & ROP"])
+    with tab1:
+        eoq()
 
-with tab1:
-    eoq()
-
-with tab2:
-    rop()
+    with tab2:
+        rop()
