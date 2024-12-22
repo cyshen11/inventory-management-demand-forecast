@@ -8,6 +8,7 @@ from components.inputs import *
 from components.dataset import *
 from components.ss_basic import ss_basic
 from components.ss_average_max import ss_average_max
+from components.ss_norm import ss_norm
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -32,7 +33,6 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
         ss_average_max()
 
     with tab3:
-        col1, col2 = st.columns(2)
-        selectbox_uncertainty_type(col1)
-        selectbox_time_units(col2)
+        ss_norm()
+        
         
