@@ -19,7 +19,7 @@ def rop():
 
   st.info(f"""
     Reorder Point
-          = AS x Lead Time + 
+          = AS x Lead Time 
           = {avg_daily_sales} x {delivery_lead_time} + {safety_stock} 
           = **{ROP}**
   """)
