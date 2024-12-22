@@ -37,9 +37,9 @@ def selectbox_service_level():
 
 def selectbox_uncertainty_type(col):
     uncertainties = [
-        "Uncertainty demand",
-        "Uncertainty lead time",
-        "Uncertainty demand and lead time"
+        "Uncertain demand",
+        "Uncertain lead time",
+        "Uncertain demand and lead time"
     ]
     st.session_state["uncertainty_type"] = col.selectbox("Select Uncertainty Type", uncertainties)
 

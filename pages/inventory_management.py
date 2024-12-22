@@ -33,6 +33,6 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
         ss_average_max()
 
     with tab3:
-        ss_norm()
+        ss_norm(filtered_data)
         
         

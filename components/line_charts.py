@@ -6,6 +6,8 @@ def product_daily_inventory_levels_chart(df):
     
     df = df.sort_values(by="Date")
     df = df[["Date", "Order_Demand"]]
+    df = df.groupby("Date").sum().reset_index()
+    df.columns = ["Date", "Order_Demand"]
 
     st.line_chart(df, x="Date", y=["Order_Demand"], y_label="Order Demand")
     
