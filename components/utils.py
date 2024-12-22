@@ -24,3 +24,20 @@ def calculate_sd(df):
   df_grouped = group_data_by_time_unit(df)
   sd = round(df_grouped['Order_Demand'].std(), 1)
   return sd
+
+def calculate_avg_demand(df):
+  time_unit = st.session_state["time_unit"]
+  total_demand = df['Order_Demand'].sum()
+
+  if time_unit == "Days":
+    avg_demand = total_demand / 365
+
+  elif time_unit == "Weeks":
+    avg_demand = total_demand / 52
+
+  elif time_unit == "Months":
+    avg_demand = total_demand / 12
+
+  avg_demand = round(avg_demand, 1)
+
+  return avg_demand

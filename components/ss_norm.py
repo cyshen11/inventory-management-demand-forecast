@@ -1,5 +1,6 @@
 from components.filters import *
 from components.inputs import *
+from components.utils import *
 import scipy.stats as stats
 
 @st.fragment
@@ -29,17 +30,11 @@ def uncertain_demand(filtered_data):
     SS: 
       \n = Z x Demand Standard Deviation x sqrt(Average Lead Time)
       \n = {Z} x {sd:.1f} x sqrt({L})
-      \n = {ss}
+      \n = **{ss}**
   """)
 
-  time_unit = st.session_state["time_unit"]
-  if time_unit == "Days":
-    avg_sales = st.session_state["avg_demand"]
-  elif time_unit == "Weeks":
-    df = filtered_data[["Date", "Order_Demand"]]
-    df["Week"] = df["Date"].dt.isocalendar().week
-    df = df[["Week", "Order_Demand"]]
-    
+  avg_sales = calculate_avg_demand(filtered_data)
+  rop = ss + L * avg_sales
 
   st.info(f"""
     Reorder Point (ROP)
