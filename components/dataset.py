@@ -8,5 +8,6 @@ class Dataset:
 
   def prepare_data(self, df):
     df['Date'] = pd.to_datetime(df['Date'])
+    df = df.loc[df['Date'] == df['Date']]
     return df
   

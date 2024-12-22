@@ -42,10 +42,10 @@ def selectbox_week():
         st.session_state["week_number"] = st.selectbox("Select Week Number", range(1, 53))
 
 def selectbox_product(col):
-    df = pd.read_csv("data/csv/products.csv")
-    product_number = col.selectbox("Select Product Number", df["product_number"])
-    st.session_state["product_number"] = product_number
-    st.session_state["product_id"] = df[df["product_number"] == product_number]["product_id"].values[0]
+    # Read data
+    df = st.session_state["dataset"].data
+    product_code = col.selectbox("Select Product", df["Product_Code"])
+    st.session_state["product_code"] = product_code
 
 def selectbox_service_level():
     service_level_type = st.selectbox("Select Service Level Type", ["Cycle Service Level", "Fill Rate"])
