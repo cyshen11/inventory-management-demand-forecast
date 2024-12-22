@@ -7,6 +7,7 @@ from components.dataframe import *
 from components.line_charts import *
 from components.inputs import *
 from components.dataset import *
+from components.eoq import eoq
 import warnings
 
 st.title("Inventory Management")
@@ -38,7 +39,4 @@ product_daily_inventory_levels_chart(data)
 tab1, tab2, tab3 = st.tabs(["EOQ", "Reorder Point", "Safety Stock"])
 
 with tab1:
-    col1, col2, col3 = st.columns(3)
-    D = col1.number_input("Demand per year (D)", value=st.session_state["demand_per_year"])
-    K = col1.number_input("Order Cost per purchase order (K)", value=0)
-    H = col2.number_input("Holding cost per unit per year (H)", value=0)
+    eoq()
