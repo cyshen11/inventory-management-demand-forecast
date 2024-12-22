@@ -10,13 +10,12 @@ from components.dataset import *
 from components.eoq import eoq
 from components.rop import rop
 import warnings
+warnings.filterwarnings("ignore")
 
 st.title("Inventory Management")
-
-data = Dataset().data
-
 st.subheader("Demand Trend")
-dynamic_filters = dynamic_filters_product(data)
+
+dynamic_filters = dynamic_filters_product(Dataset().data)
 filtered_data = dynamic_filters.filter_df()
 filters = st.session_state[dynamic_filters.filters_name]
 
