@@ -24,4 +24,9 @@ def input_demand_sd(col, df):
     df.columns = ["Date", "Order_Demand"]
     sd = round(df['Order_Demand'].std(), 2)
     
-    st.session["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd, step=0.01)
+    st.session_state["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd)
+
+def input_avg_lead_time(col):
+    time_unit = st.session_state["time_unit"]
+
+    st.session_state["avg_lead_time"] = col.number_input(f"Specify Average Lead Time ({time_unit})", value=1.00)
