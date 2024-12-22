@@ -1,7 +1,12 @@
 import streamlit as st
 
 def input_product_fill_rate(col):
-    st.session_state["product_fill_rate"] = col.number_input("Specify Targeted Product Fill Rate", value=0.90, step=0.01)
+    st.session_state["product_fill_rate"] = col.number_input(
+       label="Specify Targeted Product Fill Rate", 
+       min_value = 0.00,
+       max_value = 1.00,
+       value=0.90, 
+       step=0.01)
 
 def input_demand_sd(col, df):
     time_unit = st.session_state["time_unit"]
@@ -22,9 +27,9 @@ def input_demand_sd(col, df):
       df = df.groupby("Month").sum().reset_index()
 
     df.columns = ["Date", "Order_Demand"]
-    sd = round(df['Order_Demand'].std(), 2)
+    sd = round(df['Order_Demand'].std(), 1)
     
-    st.session_state["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd)
+    st.session_state["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd, step=0.1)
 
 def input_avg_lead_time(col):
     time_unit = st.session_state["time_unit"]
