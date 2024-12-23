@@ -44,10 +44,10 @@ def selectbox_uncertainty_type(col):
     ]
     st.session_state["uncertainty_type"] = col.selectbox("Select Uncertainty Type", uncertainties)
 
-def selectbox_time_units(col):
+def selectbox_time_units(col, key):
     time_units = [
         "Days",
         "Weeks",
         "Months"
     ]
-    st.session_state["time_unit"] = col.selectbox("Select Time Units", time_units)
+    st.session_state["time_unit"] = col.selectbox("Select Time Units", time_units, key=key)

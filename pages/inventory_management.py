@@ -8,7 +8,7 @@ from components.inputs import *
 from components.dataset import *
 from components.ss_basic import ss_basic
 from components.ss_average_max import ss_average_max
-from components.ss_norm import ss_norm
+from components.ss_norm import *
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -28,7 +28,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     lead_time_chart(lead_time_data)
 
     st.subheader("Calculate Safety Stock")
-    tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Cycle Service Rate"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Basic", "Average - Max", "Cycle Service Rate", "Fill Rate"])
 
     with tab1:
         ss_basic(year)
@@ -37,6 +37,9 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
         ss_average_max()
 
     with tab3:
-        ss_norm(filtered_data, lead_time_data)
+        ss_cycle_service_rate(filtered_data, lead_time_data)
+
+    with tab4:
+        ss_fill_rate(filtered_data, lead_time_data)
         
         
