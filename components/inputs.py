@@ -13,10 +13,35 @@ def input_demand_sd(col, df):
     sd = calculate_sd(df)
     st.session_state["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd, step=0.1)
 
-def input_avg_lead_time(col):
+def input_avg_lead_time(col, df):
     time_unit = st.session_state["time_unit"]
 
-    st.session_state["avg_lead_time"] = col.number_input(f"Specify Average Lead Time ({time_unit})", value=1.00)
+    if time_unit == "Days":
+      denom = 1
+    elif time_unit == "Weeks":
+      denom = 7
+    elif time_unit == "Months":
+      denom = 30
+
+    df["Lead_Time"] = df["Lead_Time_Days"] / denom
+    value = round(df["Lead_Time"].mean(), 2)
+
+    st.session_state["avg_lead_time"] = col.number_input(f"Specify Average Lead Time ({time_unit})", value=value)
+
+def input_sd_lead_time(col, df):
+    time_unit = st.session_state["time_unit"]
+
+    if time_unit == "Days":
+      denom = 1
+    elif time_unit == "Weeks":
+      denom = 7
+    elif time_unit == "Months":
+      denom = 30
+
+    df["Lead_Time"] = df["Lead_Time_Days"] / denom
+    value = round(df["Lead_Time"].std(), 2)
+
+    st.session_state["sd_lead_time"] = col.number_input(f"Specify Lead Time Std Dev ({time_unit})", value=value)
 
 def input_avg_sales(col, df):
     time_unit = st.session_state["time_unit"]
@@ -30,3 +55,4 @@ def input_avg_sales(col, df):
       label = "Specify Average Sales per month"
 
     st.session_state["avg_sales"] = col.number_input(label, value=avg_sales, step=0.1)
+
