@@ -50,4 +50,4 @@ def rop():
 def ss_basic(year):
     eoq()
     rop()
-    inventory_chart(year)
+    # inventory_chart(year)
