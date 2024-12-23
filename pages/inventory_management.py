@@ -28,7 +28,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     lead_time_chart(lead_time_data)
 
     st.subheader("Calculate Safety Stock")
-    tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Normal Distribution"])
+    tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Cycle Service Rate"])
 
     with tab1:
         ss_basic(year)
