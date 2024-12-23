@@ -22,6 +22,7 @@ def group_data_by_time_unit(df):
   return df
 
 def calculate_sd_demand(df):
+  df = remove_outliers_iqr(df, "Order_Demand")
   df_grouped = group_data_by_time_unit(df)
   sd = round(df_grouped['Order_Demand'].std(), 1)
   return sd
@@ -71,3 +72,12 @@ def calculate_avg_lead_time(df):
   value = round(df["Lead_Time"].mean(), 2)
 
   return value
+
+def remove_outliers_iqr(df, column):
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
