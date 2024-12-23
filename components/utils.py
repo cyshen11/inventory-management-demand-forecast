@@ -57,3 +57,17 @@ def calculate_sd_lead_time(df):
   sd = round(df["Lead_Time"].std(), 2)
 
   return sd
+
+def calculate_avg_lead_time(df):
+  time_unit = st.session_state["time_unit"]
+  if time_unit == "Days":
+      denom = 1
+  elif time_unit == "Weeks":
+    denom = 7
+  elif time_unit == "Months":
+    denom = 30
+
+  df["Lead_Time"] = df["Lead_Time_Days"] / denom
+  value = round(df["Lead_Time"].mean(), 2)
+
+  return value

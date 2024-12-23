@@ -15,17 +15,7 @@ def input_demand_sd(col, df):
 
 def input_avg_lead_time(col, df):
     time_unit = st.session_state["time_unit"]
-
-    if time_unit == "Days":
-      denom = 1
-    elif time_unit == "Weeks":
-      denom = 7
-    elif time_unit == "Months":
-      denom = 30
-
-    df["Lead_Time"] = df["Lead_Time_Days"] / denom
-    value = round(df["Lead_Time"].mean(), 2)
-
+    value = calculate_avg_lead_time(df)
     st.session_state["avg_lead_time"] = col.number_input(f"Specify Average Lead Time ({time_unit})", value=value)
 
 def input_sd_lead_time(col, df):
