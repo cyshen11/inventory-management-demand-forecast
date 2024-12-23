@@ -25,12 +25,12 @@ def ss_norm(filtered_data, lead_time_data):
 
 def uncertain_demand(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
-  input_product_fill_rate(col1)
+  input_cycle_service_rate(col1)
   input_demand_sd(col2, filtered_data)
   input_avg_lead_time(col3, lead_time_data)
 
-  product_fill_rate = st.session_state["product_fill_rate"]
-  Z = round(stats.norm.ppf(product_fill_rate), 2)
+  cycle_service_rate = st.session_state["cycle_service_rate"]
+  Z = round(stats.norm.ppf(cycle_service_rate), 2)
   sd = st.session_state["demand_sd"]
   L = st.session_state["avg_lead_time"]
   ss = round(Z * sd * (L ** 0.5))
@@ -56,15 +56,15 @@ def uncertain_demand(filtered_data, lead_time_data):
 
 def uncertain_lead_time(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
-  input_product_fill_rate(col1)
+  input_cycle_service_rate(col1)
   input_avg_sales(col2, filtered_data)
   input_sd_lead_time(col3, lead_time_data)
 
-  product_fill_rate = st.session_state["product_fill_rate"]
+  cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_sales = st.session_state["avg_sales"]
   sd_lead_time = st.session_state["sd_lead_time"]
 
-  Z = round(stats.norm.ppf(product_fill_rate), 2)
+  Z = round(stats.norm.ppf(cycle_service_rate), 2)
   ss = round(Z * sd_lead_time * avg_sales)
 
   st.info(f"""
@@ -90,19 +90,19 @@ def uncertain_demand_lead_time_ind(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
 
-  input_product_fill_rate(col1)
+  input_cycle_service_rate(col1)
   input_avg_lead_time(col2, lead_time_data)
   input_demand_sd(col3, filtered_data)
   input_avg_sales(col4, filtered_data)
   input_sd_lead_time(col5, lead_time_data)
 
-  product_fill_rate = st.session_state["product_fill_rate"]
+  cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_lead_time = st.session_state["avg_lead_time"]
   sd_demand = st.session_state["demand_sd"]
   avg_sales = st.session_state["avg_sales"]
   sd_lead_time = st.session_state["sd_lead_time"]
 
-  Z = round(stats.norm.ppf(product_fill_rate), 2)
+  Z = round(stats.norm.ppf(cycle_service_rate), 2)
   temp_1 = avg_lead_time * (sd_demand ** 2)
   temp_2 = (avg_lead_time ** 2) * (sd_lead_time ** 2)
   ss = round(Z * ((temp_1 + temp_2) ** 0.5))
@@ -126,19 +126,19 @@ def uncertain_demand_lead_time_dep(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
 
-  input_product_fill_rate(col1)
+  input_cycle_service_rate(col1)
   input_avg_lead_time(col2, lead_time_data)
   input_demand_sd(col3, filtered_data)
   input_avg_sales(col4, filtered_data)
   input_sd_lead_time(col5, lead_time_data)
 
-  product_fill_rate = st.session_state["product_fill_rate"]
+  cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_lead_time = st.session_state["avg_lead_time"]
   sd_demand = st.session_state["demand_sd"]
   avg_sales = st.session_state["avg_sales"]
   sd_lead_time = st.session_state["sd_lead_time"]
 
-  Z = round(stats.norm.ppf(product_fill_rate), 2)
+  Z = round(stats.norm.ppf(cycle_service_rate), 2)
   temp_1 = Z * sd_demand * (avg_lead_time ** 0.5)
   temp_2 = Z * avg_sales * sd_lead_time
   ss = round(temp_1 + temp_2)

@@ -1,9 +1,9 @@
 import streamlit as st
 from components.utils import *
 
-def input_product_fill_rate(col):
-    st.session_state["product_fill_rate"] = col.number_input(
-       label="Specify Targeted Product Fill Rate", 
+def input_cycle_service_rate(col):
+    st.session_state["cycle_service_rate"] = col.number_input(
+       label="Specify Targeted Cycle Service Rate", 
        min_value = 0.00,
        max_value = 1.00,
        value=0.90, 
