@@ -6,8 +6,9 @@ import scipy.stats as stats
 @st.fragment
 def ss_norm(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
-  selectbox_uncertainty_type(col1)
-  selectbox_time_units(col2)
+  input_cycle_service_rate(col1)
+  selectbox_uncertainty_type(col2)
+  selectbox_time_units(col3)
   
   uncertainty_type = st.session_state["uncertainty_type"]
 
@@ -25,9 +26,9 @@ def ss_norm(filtered_data, lead_time_data):
 
 def uncertain_demand(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
-  input_cycle_service_rate(col1)
-  input_demand_sd(col2, filtered_data)
-  input_avg_lead_time(col3, lead_time_data)
+  input_avg_sales(col1, filtered_data)
+  input_avg_lead_time(col2, lead_time_data)
+  input_demand_sd(col3, filtered_data)
 
   cycle_service_rate = st.session_state["cycle_service_rate"]
   Z = round(stats.norm.ppf(cycle_service_rate), 2)
@@ -41,9 +42,7 @@ def uncertain_demand(filtered_data, lead_time_data):
       \n = {Z} x {sd:.2f} x sqrt({L})
       \n = **{ss}**
   """)
-
-  col1, col2, col3 = st.columns(3)
-  input_avg_sales(col1, filtered_data)
+  
   avg_sales = st.session_state["avg_sales"]
   rop = round(ss + L * avg_sales)
 
@@ -56,10 +55,10 @@ def uncertain_demand(filtered_data, lead_time_data):
 
 def uncertain_lead_time(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
-  input_cycle_service_rate(col1)
-  input_avg_sales(col2, filtered_data)
+  input_avg_sales(col1, filtered_data)
+  input_avg_lead_time(col2, lead_time_data)
   input_sd_lead_time(col3, lead_time_data)
-
+  
   cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_sales = st.session_state["avg_sales"]
   sd_lead_time = st.session_state["sd_lead_time"]
@@ -73,9 +72,7 @@ def uncertain_lead_time(filtered_data, lead_time_data):
       \n = {Z} x {sd_lead_time:.2f} x {avg_sales}
       \n = **{ss}**
   """)
-
-  col1, col2, col3 = st.columns(3)
-  input_avg_lead_time(col1, lead_time_data)
+  
   L = st.session_state["avg_lead_time"]
   rop = round(ss + L * avg_sales)
 
@@ -90,12 +87,11 @@ def uncertain_demand_lead_time_ind(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
 
-  input_cycle_service_rate(col1)
   input_avg_lead_time(col2, lead_time_data)
-  input_demand_sd(col3, filtered_data)
-  input_avg_sales(col4, filtered_data)
-  input_sd_lead_time(col5, lead_time_data)
-
+  input_sd_lead_time(col3, lead_time_data)
+  input_avg_sales(col5, filtered_data)
+  input_demand_sd(col6, filtered_data)
+  
   cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_lead_time = st.session_state["avg_lead_time"]
   sd_demand = st.session_state["demand_sd"]
@@ -126,11 +122,10 @@ def uncertain_demand_lead_time_dep(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
 
-  input_cycle_service_rate(col1)
   input_avg_lead_time(col2, lead_time_data)
-  input_demand_sd(col3, filtered_data)
-  input_avg_sales(col4, filtered_data)
-  input_sd_lead_time(col5, lead_time_data)
+  input_sd_lead_time(col3, lead_time_data)
+  input_avg_sales(col5, filtered_data)
+  input_demand_sd(col6, filtered_data)
 
   cycle_service_rate = st.session_state["cycle_service_rate"]
   avg_lead_time = st.session_state["avg_lead_time"]
