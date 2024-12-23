@@ -29,11 +29,11 @@ def input_avg_sales(col, df):
     avg_sales = calculate_avg_demand(df)
 
     if time_unit == "Days":
-      label = "Specify Average Sales per day"
+      label = "Specify Average Demand per day"
     elif time_unit == "Weeks":
-      label = "Specify Average Sales per week"
+      label = "Specify Average Demand per week"
     elif time_unit == "Months":
-      label = "Specify Average Sales per month"
+      label = "Specify Average Demand per month"
 
     st.session_state["avg_sales"] = col.number_input(label, value=avg_sales)
 
