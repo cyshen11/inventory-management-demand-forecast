@@ -25,6 +25,7 @@ year = filtered_data['Date'].dt.year.unique().astype(int)[0]
 
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
+    lead_time_chart(lead_time_data)
 
     st.subheader("Calculate Safety Stock")
     tab1, tab2, tab3 = st.tabs(["Basic", "Average - Max", "Normal Distribution"])
