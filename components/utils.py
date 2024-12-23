@@ -40,7 +40,7 @@ def calculate_avg_demand(df):
   elif time_unit == "Months":
     avg_demand = total_demand / 12
 
-  avg_demand = round(avg_demand, 1)
+  avg_demand = round(avg_demand)
 
   return avg_demand
 

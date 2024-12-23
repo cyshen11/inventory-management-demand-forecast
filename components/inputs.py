@@ -35,5 +35,5 @@ def input_avg_sales(col, df):
     elif time_unit == "Months":
       label = "Specify Average Sales per month"
 
-    st.session_state["avg_sales"] = col.number_input(label, value=avg_sales, step=0.1)
+    st.session_state["avg_sales"] = col.number_input(label, value=avg_sales)
 
