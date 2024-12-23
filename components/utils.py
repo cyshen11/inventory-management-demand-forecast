@@ -1,4 +1,5 @@
 import streamlit as st
+import datetime as dt
 
 def group_data_by_time_unit(df):
   time_unit = st.session_state["time_unit"]
@@ -41,3 +42,18 @@ def calculate_avg_demand(df):
   avg_demand = round(avg_demand, 1)
 
   return avg_demand
+
+def calculate_sd_lead_time(df):
+  time_unit = st.session_state["time_unit"]
+
+  if time_unit == "Days":
+    denom = 1
+  elif time_unit == "Weeks":
+    denom = 7
+  elif time_unit == "Months":
+    denom = 30
+
+  df["Lead_Time"] = df["Lead_Time_Days"] / denom
+  sd = round(df["Lead_Time"].std(), 2)
+
+  return sd
