@@ -39,7 +39,8 @@ def selectbox_uncertainty_type(col):
     uncertainties = [
         "Uncertain demand",
         "Uncertain lead time",
-        "Uncertain demand and lead time"
+        "Uncertain demand and lead time (independent)",
+        "Uncertain demand and lead time (dependent)",
     ]
     st.session_state["uncertainty_type"] = col.selectbox("Select Uncertainty Type", uncertainties)
 
