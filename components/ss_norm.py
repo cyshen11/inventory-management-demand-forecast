@@ -153,9 +153,6 @@ def uncertain_demand_lead_time_dep(filtered_data, lead_time_data):
           \n = **{rop}**
   """)
 
-def fill_rate():
-
-
 @st.fragment
 def ss_fill_rate(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
@@ -179,7 +176,8 @@ def ss_fill_rate(filtered_data, lead_time_data):
 
   st.info(f"""
     Safety Stock (SS): **{ss}**
-    \n[Formula reference](https://or.stackexchange.com/questions/5589/safety-stock-with-fill-rate-criterion)
+    \n[Formula reference](https://or.stackexchange.com/questions/5589/safety-stock-with-fill-rate-criterion) 
+    (using approximation function)
   """)
   st.info(f"""
     Reorder Point (ROP)
