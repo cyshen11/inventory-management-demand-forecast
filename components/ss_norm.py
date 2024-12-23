@@ -20,6 +20,9 @@ def ss_norm(filtered_data, lead_time_data):
   elif uncertainty_type == "Uncertain demand and lead time (independent)":
     uncertain_demand_lead_time_ind(filtered_data, lead_time_data)
 
+  elif uncertainty_type == "Uncertain demand and lead time (dependent)":
+    uncertain_demand_lead_time_dep(filtered_data, lead_time_data)
+
 def uncertain_demand(filtered_data, lead_time_data):
   col1, col2, col3 = st.columns(3)
   input_product_fill_rate(col1)
@@ -109,6 +112,42 @@ def uncertain_demand_lead_time_ind(filtered_data, lead_time_data):
     SS: 
       \n = Z x sqrt(Average Lead Time x Demand Standard Deviation^2 + Average Lead Time^2 x Lead Time Standard Deviation^2)
       \n = {Z} x sqrt({avg_lead_time} x {sd_demand}^2 + {avg_lead_time}^2 x {sd_lead_time}^2)
+      \n = **{ss}**
+  """)
+
+  st.info(f"""
+    Reorder Point (ROP)
+          \n = SS + Average Lead Time x Average Sales
+          \n = {ss} + {avg_lead_time} x {avg_sales}
+          \n = **{rop}**
+  """)
+
+def uncertain_demand_lead_time_dep(filtered_data, lead_time_data):
+  col1, col2, col3 = st.columns(3)
+  col4, col5, col6 = st.columns(3)
+
+  input_product_fill_rate(col1)
+  input_avg_lead_time(col2, lead_time_data)
+  input_demand_sd(col3, filtered_data)
+  input_avg_sales(col4, filtered_data)
+  input_sd_lead_time(col5, lead_time_data)
+
+  product_fill_rate = st.session_state["product_fill_rate"]
+  avg_lead_time = st.session_state["avg_lead_time"]
+  sd_demand = st.session_state["demand_sd"]
+  avg_sales = st.session_state["avg_sales"]
+  sd_lead_time = st.session_state["sd_lead_time"]
+
+  Z = round(stats.norm.ppf(product_fill_rate), 2)
+  temp_1 = Z * sd_demand * (avg_lead_time ** 0.5)
+  temp_2 = Z * avg_sales * sd_lead_time
+  ss = round(temp_1 + temp_2)
+  rop = round(ss + avg_lead_time * avg_sales)
+
+  st.info(f"""
+    SS: 
+      \n = Z x Demand Standard Deviation x sqrt(Average Lead Time) + Z x Average Sales x Lead Time Standard Deviation
+      \n = {Z} x {sd_demand} x sqrt({avg_lead_time}) + {Z} x {avg_sales} x {sd_lead_time}
       \n = **{ss}**
   """)
 
