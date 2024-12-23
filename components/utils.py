@@ -20,7 +20,7 @@ def group_data_by_time_unit(df):
   df.columns = ["Date", "Order_Demand"]
   return df
 
-def calculate_sd(df):
+def calculate_sd_demand(df):
   df_grouped = group_data_by_time_unit(df)
   sd = round(df_grouped['Order_Demand'].std(), 1)
   return sd

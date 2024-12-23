@@ -10,7 +10,7 @@ def input_product_fill_rate(col):
        step=0.01)
 
 def input_demand_sd(col, df):
-    sd = calculate_sd(df)
+    sd = calculate_sd_demand(df)
     st.session_state["demand_sd"] = col.number_input("Specify Demand Standard Deviation", value=sd, step=0.1)
 
 def input_avg_lead_time(col, df):
