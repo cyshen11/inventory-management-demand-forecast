@@ -18,13 +18,12 @@ st.subheader("Demand Trend")
 dynamic_filters = dynamic_filters_product(Dataset().data)
 filtered_data = dynamic_filters.filter_df()
 filters = st.session_state[dynamic_filters.filters_name]
-
-lead_time_data = DatasetLeadTime(filters).data
-
 year = filtered_data['Date'].dt.year.unique().astype(int)[0]
 
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
+
+    lead_time_data = DatasetLeadTime(filters).data
     lead_time_chart(lead_time_data)
 
     st.subheader("Calculate Safety Stock")
