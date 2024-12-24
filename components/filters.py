@@ -17,7 +17,7 @@ def selectbox_year(df, col):
 def dynamic_filters_product(df):
     df['Year'] = df['Date'].dt.year
     dynamic_filters = DynamicFilters(df, filters=['Product_Code', 'Year'])
-    dynamic_filters.display_filters(location='columns', num_columns=2)
+    dynamic_filters.display_filters(location='sidebar')
     return dynamic_filters
 
 def selectbox_week():

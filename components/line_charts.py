@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import random
 
 def product_daily_inventory_levels_chart(df):
     
@@ -14,6 +15,16 @@ def product_daily_inventory_levels_chart(df):
     st.session_state["demand_per_year"] = df["Order_Demand"].sum()
     st.session_state["avg_demand"] = round(df["Order_Demand"].sum() / 365)
     st.session_state["max_demand"] = df["Order_Demand"].max()
+
+def simulation_chart(df, year_sim, ss, rop, q):
+    
+    df = df.loc[df["Date"].dt.year == year_sim]
+    df = df.sort_values(by="Date")
+    df = df[["Date", "Order_Demand"]]
+    df = df.groupby("Date").sum().reset_index()
+    df.columns = ["Date", "Order_Demand"]
+
+    st.line_chart(df, x="Date", y=["Order_Demand"], y_label="Order Demand", height=250)
 
 def inventory_chart(year):
     year = str(year)

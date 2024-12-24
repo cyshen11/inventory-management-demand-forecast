@@ -9,6 +9,7 @@ from components.dataset import *
 from components.ss_basic import *
 from components.ss_average_max import ss_average_max
 from components.ss_norm import *
+from components.simulation import *
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -18,7 +19,8 @@ st.subheader("Demand Trend")
 dynamic_filters = dynamic_filters_product(Dataset().data)
 filtered_data = dynamic_filters.filter_df()
 filters = st.session_state[dynamic_filters.filters_name]
-year = filtered_data['Date'].dt.year.unique().astype(int)[0]
+st.session_state['year'] = filters['Year'][0]
+st.session_state['product_code'] = filters['Product_Code'][0]
 
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     product_daily_inventory_levels_chart(filtered_data)
@@ -36,7 +38,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     ])
 
     with tab1:
-        ss_basic(year)
+        ss_basic()
 
     with tab2:
         ss_average_max()
@@ -53,3 +55,5 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     st.subheader("Calculate EOQ")
     eoq()
         
+    simulation()
+    

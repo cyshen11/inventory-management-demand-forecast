@@ -1,5 +1,7 @@
 import streamlit as st
 from components.utils import *
+from components.dataset import Dataset
+import random
 
 def input_cycle_service_rate(col):
     st.session_state["cycle_service_rate"] = col.number_input(
@@ -50,3 +52,17 @@ def input_holding_cost(col, key):
 
 def input_stockout_cost(col, key):
    st.session_state["stockout_cost"] = col.number_input("Stockout cost per unit (p)", value=0.20, key=key)
+
+def input_year(col, df):
+   years = df['Date'].dt.year.unique().tolist()
+   years.sort()
+   return col.selectbox("Select Year", years)
+
+def input_ss(col):
+   return col.number_input("Safety Stock (SS)", value=0)
+
+def input_rop(col):
+   return col.number_input("Reorder Point (ROP)", value=0)
+
+def input_oq(col):
+   return col.number_input("Order Quantity (Q)", value=0)
