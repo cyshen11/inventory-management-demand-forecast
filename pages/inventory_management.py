@@ -6,7 +6,7 @@ from components.dataframe import *
 from components.line_charts import *
 from components.inputs import *
 from components.dataset import *
-from components.ss_basic import ss_basic
+from components.ss_basic import *
 from components.ss_average_max import ss_average_max
 from components.ss_norm import *
 import warnings
@@ -49,4 +49,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     
     with tab5:
         ss_holding_stockout(filtered_data, lead_time_data)
+
+    st.subheader("Calculate EOQ")
+    eoq()
         

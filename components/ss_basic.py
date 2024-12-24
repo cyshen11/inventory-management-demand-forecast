@@ -48,6 +48,5 @@ def rop():
 
 @st.fragment
 def ss_basic(year):
-    eoq()
     rop()
     # inventory_chart(year)
