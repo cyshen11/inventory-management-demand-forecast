@@ -62,6 +62,14 @@ def simulation_chart(df_demand, year_sim, ss, rop, q, L):
 
     st.line_chart(df, x="Date", y=["Order_Demand", "Inventory_Quantity"], y_label="Quantity")
 
+    product_fill_rate_chart(df)
+
+def product_fill_rate_chart(df):
+    df = df.loc[df["Order_Demand"] > 0]
+    df['Fill_Rate'] = round(df["Inventory_Quantity"] / df["Order_Demand"], 2)
+    df['Fill_Rate'] = df['Fill_Rate'].apply(lambda x: min(x, 1.0))
+    st.line_chart(df, x="Date", y=["Fill_Rate"], y_label="Fill Rate", height=250)
+
 def inventory_chart(year):
     year = str(year)
     
