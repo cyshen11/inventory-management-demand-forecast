@@ -26,3 +26,9 @@ def ytd_order_fill_rate():
         st.metric("YTD Total Orders", total_orders)
     with col3:
         st.metric("YTD Total Filled", total_filled)
+
+def ytd_product_fill_rate(df, col):
+    df = df.loc[df["Order_Demand"] > 0]
+    product_fill_rate = round(df["Inventory_Quantity"].sum() / df["Order_Demand"].sum(), 2)
+    product_fill_rate = min(product_fill_rate, 1)
+    col.metric("YTD Product Fill Rate:", f"{product_fill_rate:.1f}")
