@@ -28,32 +28,33 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     lead_time_data = DatasetLeadTime(filters).data
     lead_time_chart(lead_time_data)
 
-    st.subheader("Calculate EOQ")
-    eoq()
+    with st.expander("Calculate EOQ"):
+        eoq()
 
-    st.subheader("Calculate Safety Stock and Reorder Point")
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "Basic", 
-        "Average - Max", 
-        "Cycle Service Rate", 
-        "Fill Rate",
-        "Holding / Stockout cost"
-    ])
+    with st.expander("Calculate Safety Stock and Reorder Point"):
+        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+            "Basic", 
+            "Average - Max", 
+            "Cycle Service Rate", 
+            "Fill Rate",
+            "Holding / Stockout cost"
+        ])
 
-    with tab1:
-        ss_basic()
+        with tab1:
+            ss_basic()
 
-    with tab2:
-        ss_average_max()
+        with tab2:
+            ss_average_max()
 
-    with tab3:
-        ss_cycle_service_rate(filtered_data, lead_time_data)
+        with tab3:
+            ss_cycle_service_rate(filtered_data, lead_time_data)
 
-    with tab4:
-        ss_fill_rate(filtered_data, lead_time_data)
-    
-    with tab5:
-        ss_holding_stockout(filtered_data, lead_time_data)
+        with tab4:
+            ss_fill_rate(filtered_data, lead_time_data)
         
-    simulation(lead_time_data)
+        with tab5:
+            ss_holding_stockout(filtered_data, lead_time_data)
+    
+    with st.expander("Simulation"):
+        simulation(lead_time_data)
     

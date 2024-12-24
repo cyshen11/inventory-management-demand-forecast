@@ -8,7 +8,6 @@ from components.filters import *
 
 @st.fragment
 def simulation(lead_time_data):
-  st.subheader("Simulation")
 
   df = Dataset().data
   df = df.loc[df['Product_Code'] == st.session_state["product_code"]]
