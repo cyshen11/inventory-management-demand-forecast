@@ -24,6 +24,6 @@ def simulation(lead_time_data):
 
   if ss > 0 and rop > 0 and q > 0:
     df_calculation = simulation_chart(df, year_sim, ss, rop, q, L)
-    product_fill_rate_chart(df_calculation)
     col1, col2, col3 = st.columns(3)
     ytd_product_fill_rate(df_calculation, col1)
+    product_fill_rate_chart(df_calculation)
