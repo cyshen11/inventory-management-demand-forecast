@@ -20,4 +20,5 @@ def simulation(lead_time_data):
   L = round(st.session_state["avg_lead_time"])
 
   if ss > 0 and rop > 0 and q > 0:
-    simulation_chart(df, year_sim, ss, rop, q, L)
+    df_calculation = simulation_chart(df, year_sim, ss, rop, q, L)
+    product_fill_rate_chart(df_calculation)
