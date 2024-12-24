@@ -16,15 +16,51 @@ def product_daily_inventory_levels_chart(df):
     st.session_state["avg_demand"] = round(df["Order_Demand"].sum() / 365)
     st.session_state["max_demand"] = df["Order_Demand"].max()
 
-def simulation_chart(df, year_sim, ss, rop, q):
+def simulation_chart(df_demand, year_sim, ss, rop, q, L):
     
-    df = df.loc[df["Date"].dt.year == year_sim]
-    df = df.sort_values(by="Date")
-    df = df[["Date", "Order_Demand"]]
-    df = df.groupby("Date").sum().reset_index()
-    df.columns = ["Date", "Order_Demand"]
+    df_demand = df_demand.loc[df_demand["Date"].dt.year == year_sim]
+    df_demand = df_demand.sort_values(by="Date")
+    df_demand = df_demand[["Date", "Order_Demand"]]
+    df_demand = df_demand.groupby("Date").sum().reset_index()
+    df_demand.columns = ["Date", "Order_Demand"]
 
-    st.line_chart(df, x="Date", y=["Order_Demand"], y_label="Order Demand", height=250)
+    start_date = pd.to_datetime(f"{year_sim}-01-01")
+    end_date = pd.to_datetime(f"{year_sim}-12-31")
+    dates = pd.date_range(start=start_date, end=end_date, freq='D')
+
+    df = pd.DataFrame({
+        "Date": dates
+    })
+    df = pd.merge(df, df_demand, on="Date", how="left")
+    df = df.fillna(0)
+
+    # Initialize inventory levels
+    initial_inventory = q + ss
+    inventory_levels = []
+    current_inventory = initial_inventory
+    day_since_trigger_rop = 0
+    
+    # Simulate inventory changes over the year
+    for index, row in df.iterrows():
+        demand = row["Order_Demand"]
+
+        # If inventory drops to ROP, order more (add EOQ after lead time)
+        if current_inventory <= rop:
+            if day_since_trigger_rop == L:
+                current_inventory += q
+                day_since_trigger_rop = 0
+            else:
+                day_since_trigger_rop += 1
+            
+        # Subtract daily demand
+        inventory_levels.append(current_inventory)
+        current_inventory -= demand
+
+        current_inventory = max(current_inventory, 0)
+
+    df["Inventory_Quantity"] = inventory_levels
+
+    st.line_chart(df, x="Date", y=["Order_Demand", "Inventory_Quantity"], y_label="Quantity")
 
 def inventory_chart(year):
     year = str(year)

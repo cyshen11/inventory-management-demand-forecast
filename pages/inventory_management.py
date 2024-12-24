@@ -55,5 +55,5 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     st.subheader("Calculate EOQ")
     eoq()
         
-    simulation()
+    simulation(lead_time_data)
     
