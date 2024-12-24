@@ -26,7 +26,7 @@ if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
     lead_time_data = DatasetLeadTime(filters).data
     lead_time_chart(lead_time_data)
 
-    st.subheader("Calculate Safety Stock")
+    st.subheader("Calculate Safety Stock and Reorder Point")
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Basic", 
         "Average - Max", 
