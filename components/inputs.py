@@ -45,3 +45,8 @@ def input_avg_sales(col, df, key):
 
     st.session_state["avg_sales"] = col.number_input(label, value=avg_sales, key=key)
 
+def input_holding_cost(col, key):
+   st.session_state["holding_cost"] = col.number_input("Holding cost per unit per year (H)", value=0.20, key=key)
+
+def input_stockout_cost(col, key):
+   st.session_state["stockout_cost"] = col.number_input("Stockout cost per unit (p)", value=0.20, key=key)

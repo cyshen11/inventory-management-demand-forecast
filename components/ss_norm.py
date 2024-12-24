@@ -2,6 +2,7 @@ from components.filters import *
 from components.inputs import *
 from components.utils import *
 import scipy.stats as stats
+import random
 
 @st.fragment
 def ss_cycle_service_rate(filtered_data, lead_time_data):
@@ -186,3 +187,34 @@ def ss_fill_rate(filtered_data, lead_time_data):
           \n = **{rop:.0f}**
   """)
 
+@st.fragment
+def ss_holding_stockout(filtered_data, lead_time_data):
+  col1, col2, col3 = st.columns(3)
+  col4, col5, col6 = st.columns(3)
+
+  input_holding_cost(col=col1, key=10017)
+  input_stockout_cost(col=col2, key=10018)
+  selectbox_time_units(col=col3, key=10019)
+  input_avg_sales(col=col4, df=filtered_data, key=10020)
+  input_demand_sd(col=col5, df=filtered_data, key=10021)
+  input_avg_lead_time(col=col6, df=lead_time_data, key=10022)
+
+  h = st.session_state['holding_cost']
+  p = st.session_state['stockout_cost']
+  mu = st.session_state['avg_sales']
+  sigma = st.session_state['demand_sd']
+  L = st.session_state['avg_lead_time']
+
+  ss = round((mu + sigma * stats.norm.cdf(p / (p + h))) * (L ** 0.5))
+  rop = ss + L * mu
+
+  st.info(f"""
+    Safety Stock (SS): **{ss}**
+    \n[Formula reference](https://or.stackexchange.com/questions/5589/safety-stock-with-fill-rate-criterion) 
+  """)
+  st.info(f"""
+    Reorder Point (ROP)
+          \n = SS + Average Lead Time x Average Sales
+          \n = {ss} + {L} x {mu}
+          \n = **{rop:.0f}**
+  """)
