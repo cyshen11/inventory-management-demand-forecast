@@ -33,3 +33,23 @@ def lead_time_chart(df):
         y_label="Lead Time (Days)",
         height=200
     )
+
+def cycle_service_level_chart(df):
+    time_unit = st.session_state["time_unit"]
+
+    if time_unit == "Days":
+        df['Date'] = df['Date'].dt.date
+    elif time_unit == "Weeks":
+        df['Date'] = df['Date'].dt.isocalendar().week
+    elif time_unit == "Months":
+        df['Date'] = df['Date'].dt.strftime('%Y-%m')
+
+    df = df.groupby("Date").agg({
+        "Order_Demand": "sum",
+        "Inventory_Quantity": "sum"
+    }).reset_index()
+
+    df["Cycle Service Rate"] = round(df["Inventory_Quantity"] / df["Order_Demand"], 2)
+    df["Cycle Service Rate"] = df["Cycle Service Rate"].apply(lambda x: min(x, 1.0))
+
+    st.bar_chart(df, x="Date", y=["Cycle Service Rate"], height=250)

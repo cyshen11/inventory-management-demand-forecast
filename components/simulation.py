@@ -1,8 +1,10 @@
 import streamlit as st
 from components.inputs import *
 from components.line_charts import *
+from components.bar_charts import *
 from components.dataset import *
 from components.metrics import *
+from components.filters import *
 
 @st.fragment
 def simulation(lead_time_data):
