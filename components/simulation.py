@@ -14,7 +14,7 @@ def simulation(lead_time_data):
 
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
-  year_sim = input_year(col1, df)
+  year_sim = selectbox_simulation_year(col1, df)
   ss = input_ss(col2)
   rop = input_rop(col3)
   q = input_oq(col4)

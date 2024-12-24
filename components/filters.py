@@ -14,6 +14,11 @@ def selectbox_year(df, col):
 
     st.session_state["year"] = col.selectbox("Year", unique_years)
 
+def selectbox_simulation_year(col, df):
+   years = df['Date'].dt.year.unique().tolist()
+   years.sort()
+   return col.selectbox("Select Year", years)
+
 def dynamic_filters_product(df):
     df['Year'] = df['Date'].dt.year
     dynamic_filters = DynamicFilters(df, filters=['Product_Code', 'Year'])

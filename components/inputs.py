@@ -53,11 +53,6 @@ def input_holding_cost(col, key):
 def input_stockout_cost(col, key):
    st.session_state["stockout_cost"] = col.number_input("Stockout cost per unit (p)", value=0.20, key=key)
 
-def input_year(col, df):
-   years = df['Date'].dt.year.unique().tolist()
-   years.sort()
-   return col.selectbox("Select Year", years)
-
 def input_ss(col):
    return col.number_input("Safety Stock (SS)", value=0)
 
