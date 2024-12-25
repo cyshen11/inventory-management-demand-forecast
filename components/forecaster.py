@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from darts import TimeSeries
-from darts.models import NaiveMean
+from darts.models import NaiveDrift
 from functools import reduce
 
 class Forecaster:
@@ -35,8 +35,8 @@ class Forecaster:
 
   def prepare_model(self):
     model = st.session_state["forecast_model"]
-    if model == "Naive":
-      return NaiveMean()
+    if model == "Naive Drift":
+      return NaiveDrift()
     
   def train_and_forecast(self):
     train_window = 365  # Days to use for training
