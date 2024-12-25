@@ -3,12 +3,13 @@ import streamlit as st
 import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveMean
+from functools import reduce
 
 class Forecaster:
-  def __init__(self, df, model):
+  def __init__(self, df):
     self.timeseries = self.prepare_timeseries(df)
-    # self.model = model
-    # self.forecast_window = st.session_state["forecast_window"]
+    self.model = self.prepare_model()
+    self.train_and_forecast()
 
   def prepare_timeseries(self, df):
     year = st.session_state["year"]
@@ -32,19 +33,42 @@ class Forecaster:
     series = TimeSeries.from_dataframe(df_forecast, "Date", "Value", freq='D')    
     return series
 
-  def forecast(self):
-    if self.model == 'Naive':
-      self.df_forecast = self.forecast_naive()
+  def prepare_model(self):
+    model = st.session_state["forecast_model"]
+    if model == "Naive":
+      return NaiveMean()
+    
+  def train_and_forecast(self):
+    train_window = 365  # Days to use for training
+    forecast_horizon = 1  # Days to predict
+    series = self.timeseries
+    model = self.model
 
-  def forecast_naive(self):
-    df_forecast = self.prepare_forecast_df()
+    # Split the series into initial training and the rest for incremental predictions
+    initial_train_series = series[:train_window]
+    test_series = series[train_window:]
 
-    if len(self.df_fy) == 0:
-      df_forecast['Order_Demand'] = np.full(365, self.df_cy['Order_Demand'][-1])
-    else:
-      if self.forecast_window == 'Day':
-        df_forecast['Forecast'] = df_forecast['Order_Demand'].ffill().values
-        df_forecast = df_forecast[['Date', 'Year', 'Forecast']]
-        df_forecast.columns = ['Date', 'Year', 'Order_Demand']
+    # Fit the model on the initial training set
+    model.fit(initial_train_series)
 
-    return df_forecast
+    # Store predictions and ground truth for evaluation
+    predictions = []
+    ground_truth = []
+
+    # Incremental training and prediction
+    for i in range(len(test_series) - forecast_horizon):
+        # Get the current prediction window
+        current_train_series = series[: train_window + i]
+        future_series = series[train_window + i : train_window + i + forecast_horizon]
+
+        # Update the model (re-fit on the extended series if necessary)
+        model.fit(current_train_series)
+
+        # Predict the next `forecast_horizon` steps
+        prediction = model.predict(forecast_horizon)
+        predictions.append(prediction)
+        ground_truth.append(future_series)
+
+    # Concatenate predictions into a single TimeSeries
+    self.predicted_series = reduce(lambda x, y: x.concatenate(y), predictions)
+    self.actual_series = reduce(lambda x, y: x.concatenate(y), ground_truth)
