@@ -16,13 +16,15 @@ warnings.filterwarnings("ignore")
 st.title("Inventory Management")
 st.subheader("Demand Trend")
 
-dynamic_filters = dynamic_filters_product(Dataset().data)
+data = Dataset().data
+dynamic_filters = dynamic_filters_product(data)
 filtered_data = dynamic_filters.filter_df()
 filters = st.session_state[dynamic_filters.filters_name]
-st.session_state['year'] = filters['Year'][0]
-st.session_state['product_code'] = filters['Product_Code'][0]
 
 if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
+    st.session_state['year'] = filters['Year'][0]
+    st.session_state['product_code'] = filters['Product_Code'][0]
+
     product_daily_inventory_levels_chart(filtered_data)
 
     lead_time_data = DatasetLeadTime(filters).data
