@@ -56,3 +56,18 @@ def selectbox_time_units(col, key):
         "Months"
     ]
     st.session_state["time_unit"] = col.selectbox("Select Time Units", time_units, key=key)
+
+def selectbox_forecast_model(col, key):
+    models = [
+        "Naive",
+        "Moving Average"
+    ]
+    st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
+
+def selectbox_forecast_window(col, key):
+    window = [
+        "Day",
+        "Week",
+        "Month"
+    ]
+    st.session_state["forecast_window"] = col.selectbox("Select Forecasting Window", window, key=key)
