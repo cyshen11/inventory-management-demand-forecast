@@ -56,9 +56,5 @@ def simulation_forecast(df, lead_time_data):
   L = round(st.session_state["avg_lead_time"])
 
   forecaster = Forecaster(df)
-  # forecaster.forecast()
-  # df_forecast = forecaster.df_forecast
-
-  # if ss > 0 and rop > 0 and q > 0:
-  #   df_calculation = simulation_chart(df_forecast, forecast_year, ss, rop, q, L)
+  forecaster.plot()
   

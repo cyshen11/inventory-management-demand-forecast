@@ -72,3 +72,13 @@ class Forecaster:
     # Concatenate predictions into a single TimeSeries
     self.predicted_series = reduce(lambda x, y: x.concatenate(y), predictions)
     self.actual_series = reduce(lambda x, y: x.concatenate(y), ground_truth)
+
+  def plot(self):
+    actual_df = self.actual_series.pd_dataframe()
+    predicted_df = self.predicted_series.pd_dataframe()
+
+    combined_df = actual_df.rename(columns={"Value": "Actual"})
+    combined_df["Predicted"] = None
+    combined_df.loc[predicted_df.index, "Predicted"] = predicted_df["Value"]
+
+    st.line_chart(combined_df)
