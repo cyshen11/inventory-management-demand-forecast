@@ -82,3 +82,17 @@ class Forecaster:
     combined_df.loc[predicted_df.index, "Predicted"] = round(predicted_df["Value"])
 
     st.line_chart(combined_df)
+
+  def score(self):
+    actual_values = self.actual_series.pd_dataframe()["Value"]
+    predicted_values = self.predicted_series.pd_dataframe()["Value"]
+    non_zero_indices = np.where(actual_values != 0)[0]
+
+    bias = round(np.mean(predicted_values - actual_values))
+    mae = round(np.mean(np.abs(predicted_values - actual_values)))
+    mape = round(np.mean(np.abs((predicted_values[non_zero_indices] - actual_values[non_zero_indices]) / actual_values[non_zero_indices])) * 100)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Bias", f"{bias}", border=True)
+    col2.metric("MAE", f"{mae}", border=True)
+    col3.metric("MAPE", f"{mape}%", border=True)

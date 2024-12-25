@@ -56,5 +56,6 @@ def simulation_forecast(df, lead_time_data):
   L = round(st.session_state["avg_lead_time"])
 
   forecaster = Forecaster(df)
+  forecaster.score()
   forecaster.plot()
   
