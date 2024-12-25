@@ -79,6 +79,6 @@ class Forecaster:
 
     combined_df = actual_df.rename(columns={"Value": "Actual"})
     combined_df["Predicted"] = None
-    combined_df.loc[predicted_df.index, "Predicted"] = predicted_df["Value"]
+    combined_df.loc[predicted_df.index, "Predicted"] = round(predicted_df["Value"])
 
     st.line_chart(combined_df)
