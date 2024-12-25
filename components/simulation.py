@@ -5,12 +5,14 @@ from components.bar_charts import *
 from components.dataset import *
 from components.metrics import *
 from components.filters import *
+from components.forecaster import Forecaster
 
 @st.fragment
 def simulation(lead_time_data):
 
   df = Dataset().data
   df = df.loc[df['Product_Code'] == st.session_state["product_code"]]
+  df = df.sort_values(by=['Date'])
 
   tab1, tab2 = st.tabs(["Actual Data", "Forecast"])
   with tab1:
@@ -38,8 +40,8 @@ def simulation_actual_data(df, lead_time_data):
 
 @st.fragment
 def simulation_forecast(df, lead_time_data):
-  year = st.session_state["year"]
-  st.subheader(f"Forecast for {year + 1}")
+  forecast_year = st.session_state["year"] + 1
+  st.subheader(f"Forecast for {forecast_year}")
 
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
@@ -52,4 +54,11 @@ def simulation_forecast(df, lead_time_data):
   q = input_oq(col6, 20006)
   input_avg_lead_time(col7, lead_time_data, 20007)
   L = round(st.session_state["avg_lead_time"])
+
+  forecaster = Forecaster(df, model)
+  # forecaster.forecast()
+  # df_forecast = forecaster.df_forecast
+
+  # if ss > 0 and rop > 0 and q > 0:
+  #   df_calculation = simulation_chart(df_forecast, forecast_year, ss, rop, q, L)
   
