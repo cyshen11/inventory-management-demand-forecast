@@ -38,9 +38,13 @@ def simulation_actual_data(df, lead_time_data):
 
 @st.fragment
 def simulation_forecast(df, lead_time_data):
+  year = st.session_state["year"]
+  st.subheader(f"Forecast for {year + 1}")
+
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
   col7, col8, col9 = st.columns(3)
+
   selectbox_forecast_window(col1, 20002)
   model = selectbox_forecast_model(col2, 20003)
   ss = input_ss(col4, 20004)
@@ -48,3 +52,4 @@ def simulation_forecast(df, lead_time_data):
   q = input_oq(col6, 20006)
   input_avg_lead_time(col7, lead_time_data, 20007)
   L = round(st.session_state["avg_lead_time"])
+  
