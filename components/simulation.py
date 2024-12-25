@@ -12,6 +12,12 @@ def simulation(lead_time_data):
   df = Dataset().data
   df = df.loc[df['Product_Code'] == st.session_state["product_code"]]
 
+  tab1, tab2 = st.tabs(["Actual Data", "Forecast"])
+  with tab1:
+    simulation_actual_data(df, lead_time_data)
+
+@st.fragment
+def simulation_actual_data(df, lead_time_data):
   col1, col2, col3 = st.columns(3)
   col4, col5, col6 = st.columns(3)
   year_sim = selectbox_simulation_year(col1, df)
