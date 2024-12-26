@@ -2,8 +2,10 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from darts import TimeSeries
-from darts.models import NaiveDrift, Croston
+from darts.models import NaiveDrift, Croston, LinearRegressionModel
 from functools import reduce
+from darts.metrics import mae, mape
+from sklearn.model_selection import ParameterGrid
 
 class Forecaster:
   def __init__(self, df):
@@ -39,7 +41,63 @@ class Forecaster:
       return NaiveDrift()
     elif model == "Croston":
       return Croston()
+    elif model == "Linear Regression":
+      param_grid = self.define_param_grid()
+      return self.optimize_model(param_grid)
+
+  def define_param_grid(self):
+    model = st.session_state["forecast_model"]
+    if model == "Linear Regression":
+      return {
+        'lags': [[-1,-2], [-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Different lag values to test
+        'output_chunk_length': [1, 7, 30],  # Different forecast horizons
+        'n_jobs': [-1],  # Use all available cores
+      }
     
+  def optimize_model(self, param_grid):
+    start_date = pd.to_datetime(f'{st.session_state["year"]}-01-01')
+    end_date = pd.to_datetime(f'{st.session_state["year"]}-12-31')
+    timeseries_cy = self.timeseries.slice(start_date, end_date)
+
+    # Split data for validation
+    train_cutoff = int(len(timeseries_cy) * 0.8)
+    train_series = timeseries_cy[:train_cutoff]
+    val_series = timeseries_cy[train_cutoff:]
+
+    best_mae = float('inf')
+    best_model = None
+    best_params = None
+
+    forecast_model = st.session_state["forecast_model"]
+
+    # Grid search through parameters
+    for params in ParameterGrid(param_grid):
+        if forecast_model == "Linear Regression":
+          model = LinearRegressionModel(**params)
+        
+        # try:
+        # Train model
+        model.fit(train_series)
+        
+        # Make predictions
+        predictions = model.predict(len(val_series))
+        
+        # Calculate metrics
+        current_mae = mae(val_series, predictions)
+        
+        # Update best model if current one is better
+        if current_mae < best_mae:
+            best_mae = current_mae
+            best_model = model
+            best_params = params
+                
+        # except Exception as e:
+        #     continue
+
+    st.markdown(f"Best parameters found: {best_params}")
+        
+    return best_model
+
   def train_and_forecast(self):
     
     train_window = 365  # Days to use for training
