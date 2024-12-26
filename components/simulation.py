@@ -5,7 +5,7 @@ from components.bar_charts import *
 from components.dataset import *
 from components.metrics import *
 from components.filters import *
-from components.forecaster import Forecaster
+from components.forecaster import *
 
 @st.fragment
 def simulation(lead_time_data):
@@ -54,6 +54,8 @@ def simulation_forecast(df, lead_time_data):
   q = input_oq(col6, 20006)
   input_avg_lead_time(col7, lead_time_data, 20007)
   L = round(st.session_state["avg_lead_time"])
+
+  BaselineForecaster(df)
 
   forecaster = Forecaster(df)
   forecaster.score()

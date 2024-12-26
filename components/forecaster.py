@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from darts import TimeSeries
-from darts.models import NaiveDrift
+from darts.models import NaiveDrift, Croston
 from functools import reduce
 
 class Forecaster:
@@ -37,6 +37,8 @@ class Forecaster:
     model = st.session_state["forecast_model"]
     if model == "Naive Drift":
       return NaiveDrift()
+    elif model == "Croston":
+      return Croston()
     
   def train_and_forecast(self):
     
@@ -101,11 +103,118 @@ class Forecaster:
     predicted_values = self.predicted_series.pd_dataframe()["Value"]
     non_zero_indices = np.where(actual_values != 0)[0]
 
-    bias = round(np.mean(predicted_values - actual_values))
+    # bias = round(np.mean(predicted_values - actual_values))
     mae = round(np.mean(np.abs(predicted_values - actual_values)))
     mape = round(np.mean(np.abs((predicted_values[non_zero_indices] - actual_values[non_zero_indices]) / actual_values[non_zero_indices])) * 100)
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Bias", f"{bias}", border=True)
-    col2.metric("MAE", f"{mae}", border=True)
-    col3.metric("MAPE", f"{mape}%", border=True)
+    mae_baseline = st.session_state['mae_baseline']
+    mape_baseline = st.session_state['mape_baseline']
+
+    col1, col2= st.columns(2)
+    # col1.metric("Bias", f"{bias}", border=True)
+    col1.metric(
+      "MAE (compared to baseline Naive Drift)", 
+      f"{mae}", 
+      border=True, 
+      delta=mae - mae_baseline,
+      delta_color="inverse"
+    )
+    col2.metric(
+      "MAPE (compared to baseline Naive Drift)", 
+      f"{mape}%", 
+      border=True, 
+      delta=mape - mape_baseline,
+      delta_color="inverse"
+    )
+
+class BaselineForecaster:
+  def __init__(self, df):
+    self.timeseries = self.prepare_timeseries(df)
+    self.model = self.prepare_model()
+    self.train_and_forecast()
+    self.score()
+
+  def prepare_timeseries(self, df):
+    year = st.session_state["year"]
+    year_forecast = year + 1
+
+    start_date = f'{year}-01-01'
+    end_date = f'{year_forecast}-12-31'
+
+    df_filtered = df.loc[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+    df_filtered = df_filtered[['Date', 'Order_Demand']]
+    df_filtered = df_filtered.groupby('Date').sum().reset_index()
+
+    date_range = pd.date_range(start=start_date, end=end_date, freq='D')
+    df_forecast = pd.DataFrame({
+      'Date': date_range,
+    })
+    df_forecast = pd.merge(df_forecast, df_filtered, on='Date', how='left')
+    df_forecast.fillna(value=0, inplace=True)
+    df_forecast = df_forecast[['Date', 'Order_Demand']]
+    df_forecast.columns = ["Date", "Value"]
+    series = TimeSeries.from_dataframe(df_forecast, "Date", "Value", freq='D')    
+    return series
+
+  def prepare_model(self):
+    return NaiveDrift()
+    
+  def train_and_forecast(self):
+    
+    train_window = 365  # Days to use for training
+    forecast_horizon = self.get_forecast_horizon_days()  # Days to predict
+    series = self.timeseries
+    model = self.model
+
+    # Split the series into initial training and the rest for incremental predictions
+    initial_train_series = series[:train_window]
+    test_series = series[train_window:]
+
+    # Fit the model on the initial training set
+    model.fit(initial_train_series)
+
+    # Store predictions and ground truth for evaluation
+    predictions = []
+    ground_truth = []
+
+    # Incremental training and prediction
+    forecast_cycles = int((len(test_series) - forecast_horizon)/forecast_horizon)
+    for i in range(forecast_cycles):
+        i_mul_forecast_horizon = i * forecast_horizon
+
+        # Get the current prediction window
+        current_train_series = series[: train_window + i_mul_forecast_horizon]
+        future_series = series[train_window + i_mul_forecast_horizon : train_window + i_mul_forecast_horizon + forecast_horizon]
+
+        # Update the model (re-fit on the extended series if necessary)
+        model.fit(current_train_series)
+
+        # Predict the next `forecast_horizon` steps
+        prediction = model.predict(forecast_horizon)
+        predictions.append(prediction)
+        ground_truth.append(future_series)
+
+    # Concatenate predictions into a single TimeSeries
+    self.predicted_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), predictions)
+    self.actual_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), ground_truth)
+
+  def get_forecast_horizon_days(self):
+    forecast_horizon = st.session_state["forecast_horizon"]
+    if forecast_horizon == "Day":
+      return 1
+    elif forecast_horizon == "Week":
+      return 7
+    elif forecast_horizon == "Month":
+      return 30
+
+  def score(self):
+    actual_values = self.actual_series.pd_dataframe()["Value"]
+    predicted_values = self.predicted_series.pd_dataframe()["Value"]
+    non_zero_indices = np.where(actual_values != 0)[0]
+
+    # bias = round(np.mean(predicted_values - actual_values))
+    mae = round(np.mean(np.abs(predicted_values - actual_values)))
+    mape = round(np.mean(np.abs((predicted_values[non_zero_indices] - actual_values[non_zero_indices]) / actual_values[non_zero_indices])) * 100)
+
+    st.session_state['mae_baseline'] = mae
+    st.session_state['mape_baseline'] = mape
