@@ -64,10 +64,10 @@ def selectbox_forecast_model(col, key):
     ]
     st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
 
-def selectbox_forecast_window(col, key):
+def selectbox_forecast_horizon(col, key):
     window = [
         "Day",
         "Week",
         "Month"
     ]
-    st.session_state["forecast_window"] = col.selectbox("Select Forecasting Window", window, key=key)
+    st.session_state["forecast_horizon"] = col.selectbox("Select Forecasting Horizon", window, key=key)

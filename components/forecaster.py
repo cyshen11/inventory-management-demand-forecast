@@ -39,8 +39,9 @@ class Forecaster:
       return NaiveDrift()
     
   def train_and_forecast(self):
+    
     train_window = 365  # Days to use for training
-    forecast_horizon = 1  # Days to predict
+    forecast_horizon = self.get_forecast_horizon_days()  # Days to predict
     series = self.timeseries
     model = self.model
 
@@ -56,10 +57,13 @@ class Forecaster:
     ground_truth = []
 
     # Incremental training and prediction
-    for i in range(len(test_series) - forecast_horizon):
+    forecast_cycles = int((len(test_series) - forecast_horizon)/forecast_horizon)
+    for i in range(forecast_cycles):
+        i_mul_forecast_horizon = i * forecast_horizon
+
         # Get the current prediction window
-        current_train_series = series[: train_window + i]
-        future_series = series[train_window + i : train_window + i + forecast_horizon]
+        current_train_series = series[: train_window + i_mul_forecast_horizon]
+        future_series = series[train_window + i_mul_forecast_horizon : train_window + i_mul_forecast_horizon + forecast_horizon]
 
         # Update the model (re-fit on the extended series if necessary)
         model.fit(current_train_series)
@@ -70,8 +74,8 @@ class Forecaster:
         ground_truth.append(future_series)
 
     # Concatenate predictions into a single TimeSeries
-    self.predicted_series = reduce(lambda x, y: x.concatenate(y), predictions)
-    self.actual_series = reduce(lambda x, y: x.concatenate(y), ground_truth)
+    self.predicted_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), predictions)
+    self.actual_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), ground_truth)
 
   def plot(self):
     actual_df = self.actual_series.pd_dataframe()
@@ -82,6 +86,15 @@ class Forecaster:
     combined_df.loc[predicted_df.index, "Predicted"] = round(predicted_df["Value"])
 
     st.line_chart(combined_df)
+
+  def get_forecast_horizon_days(self):
+    forecast_horizon = st.session_state["forecast_horizon"]
+    if forecast_horizon == "Day":
+      return 1
+    elif forecast_horizon == "Week":
+      return 7
+    elif forecast_horizon == "Month":
+      return 30
 
   def score(self):
     actual_values = self.actual_series.pd_dataframe()["Value"]
