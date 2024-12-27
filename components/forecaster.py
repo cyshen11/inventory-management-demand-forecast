@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from darts import TimeSeries
-from darts.models import NaiveDrift, Croston, LinearRegressionModel
+from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from functools import reduce
 from darts.metrics import mae, mape
 from sklearn.model_selection import ParameterGrid
@@ -37,8 +37,11 @@ class Forecaster:
 
   def prepare_model(self):
     model = st.session_state["forecast_model"]
+    forecast_horizon = st.session_state['forecast_horizon']
     if model == "Naive Drift":
       return NaiveDrift()
+    elif model == f"3-{forecast_horizon}s Moving Average":
+      return NaiveMovingAverage(input_chunk_length=3)
     elif model == "Croston":
       return Croston()
     elif model == "Linear Regression":

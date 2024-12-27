@@ -58,9 +58,10 @@ def selectbox_time_units(col, key):
     st.session_state["time_unit"] = col.selectbox("Select Time Units", time_units, key=key)
 
 def selectbox_forecast_model(col, key):
+    forecast_horizon = st.session_state['forecast_horizon']
     models = [
         "Naive Drift",
-        "Naive Moving Average",
+        f"3-{forecast_horizon}s Moving Average",
         "Croston",
         "Linear Regression"
     ]
