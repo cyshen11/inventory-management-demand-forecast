@@ -44,8 +44,8 @@ def simulation_forecast(df, lead_time_data):
   st.subheader(f"Forecast for {forecast_year}")
 
   col1, col2, col3 = st.columns(3)
-  col4, col5, col6 = st.columns(3)
-  col7, col8, col9 = st.columns(3)
+  # col4, col5, col6 = st.columns(3)
+  # col7, col8, col9 = st.columns(3)
 
   selectbox_forecast_horizon(col1, 20002)
   selectbox_forecast_model(col2, 20003)
