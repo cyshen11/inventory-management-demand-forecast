@@ -65,7 +65,8 @@ def selectbox_forecast_model(col, key):
         "Croston",
         "Linear Regression",
         "ARIMA",
-        "Exponential Smoothing"
+        "Exponential Smoothing",
+        "Random Forest"
     ]
     st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
 

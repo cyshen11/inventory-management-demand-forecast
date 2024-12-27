@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
-from darts.models import StatsForecastAutoARIMA, ExponentialSmoothing
+from darts.models import StatsForecastAutoARIMA, ExponentialSmoothing, RandomForest
 from darts.utils.utils import ModelMode, SeasonalityMode
 from functools import reduce
 from darts.metrics import mae, mape
@@ -56,15 +56,26 @@ class Forecaster:
         trend=ModelMode.ADDITIVE,
         seasonal=SeasonalityMode.NONE
       )
+    elif model == "Random Forest":
+      param_grid = self.define_param_grid()
+      return self.optimize_model(param_grid)
 
   def define_param_grid(self):
     model = st.session_state["forecast_model"]
     if model == "Linear Regression":
       return {
-        'lags': [[-1,-2], [-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Different lag values to test
+        'lags': [[-1], [-1,-2], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Different lag values to test
         'output_chunk_length': [1, 7, 30],  # Different forecast horizons
         'n_jobs': [-1],  # Use all available cores
       }
+    elif model == "Random Forest":
+        return {
+            'n_estimators': [50, 100],  # Reduced number of options for tree count
+            'max_depth': [10, 20],  # Reduced depth options
+            'lags': [[-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Key lag values
+            'output_chunk_length': [1, 7],  # Reduced forecast horizons
+            'n_jobs': [-1]  # Use all available cores
+        }
     
   def optimize_model(self, param_grid):
     start_date = pd.to_datetime(f'{st.session_state["year"]}-01-01')
@@ -86,6 +97,8 @@ class Forecaster:
     for params in ParameterGrid(param_grid):
         if forecast_model == "Linear Regression":
           model = LinearRegressionModel(**params)
+        elif forecast_model == "Random Forest":
+          model = RandomForest(**params)
         
         # try:
         # Train model
