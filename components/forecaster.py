@@ -3,7 +3,8 @@ import streamlit as st
 import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
-from darts.models import StatsForecastAutoARIMA
+from darts.models import StatsForecastAutoARIMA, ExponentialSmoothing
+from darts.utils.utils import ModelMode, SeasonalityMode
 from functools import reduce
 from darts.metrics import mae, mape
 from sklearn.model_selection import ParameterGrid
@@ -50,6 +51,11 @@ class Forecaster:
       return self.optimize_model(param_grid)
     elif model == "ARIMA":
       return StatsForecastAutoARIMA()
+    elif model == "Exponential Smoothing":
+      return ExponentialSmoothing(
+        trend=ModelMode.ADDITIVE,
+        seasonal=SeasonalityMode.NONE
+      )
 
   def define_param_grid(self):
     model = st.session_state["forecast_model"]

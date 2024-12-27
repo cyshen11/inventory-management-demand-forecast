@@ -64,7 +64,8 @@ def selectbox_forecast_model(col, key):
         f"3-{forecast_horizon}s Moving Average",
         "Croston",
         "Linear Regression",
-        "ARIMA"
+        "ARIMA",
+        "Exponential Smoothing"
     ]
     st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
 
