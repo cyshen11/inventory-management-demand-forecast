@@ -100,7 +100,8 @@ class Forecaster:
         # except Exception as e:
         #     continue
 
-    st.markdown(f"Best parameters found: {best_params}")
+    with st.popover("Best parameters"):
+      st.write(best_params)
         
     return best_model
 
