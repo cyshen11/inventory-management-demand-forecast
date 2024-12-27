@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
+from darts.models import StatsForecastAutoARIMA
 from functools import reduce
 from darts.metrics import mae, mape
 from sklearn.model_selection import ParameterGrid
@@ -47,6 +48,8 @@ class Forecaster:
     elif model == "Linear Regression":
       param_grid = self.define_param_grid()
       return self.optimize_model(param_grid)
+    elif model == "ARIMA":
+      return StatsForecastAutoARIMA()
 
   def define_param_grid(self):
     model = st.session_state["forecast_model"]
