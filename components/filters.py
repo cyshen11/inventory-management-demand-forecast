@@ -63,7 +63,8 @@ def selectbox_forecast_model(col, key):
         "Naive Drift",
         f"3-{forecast_horizon}s Moving Average",
         "Croston",
-        "Linear Regression"
+        "Linear Regression",
+        "ARIMA"
     ]
     st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
 
