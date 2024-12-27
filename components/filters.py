@@ -60,6 +60,7 @@ def selectbox_time_units(col, key):
 def selectbox_forecast_model(col, key):
     models = [
         "Naive Drift",
+        "Naive Moving Average",
         "Croston",
         "Linear Regression"
     ]
