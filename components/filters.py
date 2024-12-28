@@ -71,8 +71,7 @@ def selectbox_forecast_model(col, key):
         "Theta",
         "Kalman Filter",
         "Linear Regression",
-        "Random Forest",
-        "RNN"
+        "Random Forest"
     ]
     st.session_state["forecast_model"] = col.selectbox("Select Model", models, key=key)
 

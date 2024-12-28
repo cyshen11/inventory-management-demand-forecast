@@ -4,7 +4,7 @@ import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
-from darts.models import StatsForecastAutoTheta, KalmanForecaster, RNNModel
+from darts.models import StatsForecastAutoTheta, KalmanForecaster, NBEATSModel
 import darts.metrics
 
 class Forecaster:
@@ -58,14 +58,6 @@ class Forecaster:
     elif model == "Random Forest":
       param_grid = self.define_param_grid()
       return self.optimize_model(param_grid)
-    elif model == "RNN":
-      return RNNModel(
-        input_chunk_length=290, # 80% of 365 days
-        training_length=290,  # 80% of 365 days
-        output_chunk_length=7,
-        n_epochs=20,
-        model_name="RNN",
-      )
 
   def define_param_grid(self):
     model = st.session_state["forecast_model"]
@@ -123,7 +115,8 @@ class Forecaster:
     historical_forecast = self.model.historical_forecasts(
       self.timeseries,
       forecast_horizon=forecast_horizon,
-      start=365 - forecast_horizon + 1
+      start=365 - forecast_horizon + 1,
+      verbose=False
     )
     year = st.session_state["year"]
     split_point = pd.to_datetime(f'{year}-12-31')
