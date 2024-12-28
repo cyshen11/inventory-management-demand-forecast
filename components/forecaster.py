@@ -5,7 +5,7 @@ from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
 from darts.models import StatsForecastAutoTheta, KalmanForecaster, RNNModel
-from darts.utils.utils import ModelMode, SeasonalityMode
+from darts.metrics import mae, mape
 from functools import reduce
 from darts.metrics import mae, mape
 from sklearn.model_selection import ParameterGrid
@@ -159,8 +159,10 @@ class Forecaster:
       forecast_horizon=self.get_forecast_horizon_days(),
       start=365
     )
+    year = st.session_state["year"] + 1
+    split_point = pd.to_datetime(f'{year}-01-01')
     self.predicted_series = historical_forecast
-    self.actual_series = self.timeseries
+    self.actual_series = self.timeseries.drop_before(split_point)
 
   def plot(self):
     actual_df = self.actual_series.pd_dataframe()
@@ -169,7 +171,6 @@ class Forecaster:
     combined_df = actual_df.rename(columns={"Value": "Actual"})
     combined_df["Predicted"] = None
     combined_df.loc[predicted_df.index, "Predicted"] = round(predicted_df["Value"])
-    combined_df = combined_df.iloc[366:, :]
     combined_df.fillna(0, inplace=True)
 
     st.line_chart(combined_df)
