@@ -66,7 +66,6 @@ def selectbox_forecast_model(col, key):
     models = [
         "Naive Drift",
         f"3-{forecast_horizon}s Moving Average",
-        "Croston",
         "ARIMA",
         "Exponential Smoothing",
         "Theta",
