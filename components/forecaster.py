@@ -14,7 +14,7 @@ class Forecaster:
   def __init__(self, df):
     self.timeseries = self.prepare_timeseries(df)
     self.model = self.prepare_model()
-    self.train_and_forecast()
+    self.generate_historical_forecasts()
 
   def prepare_timeseries(self, df):
     year = st.session_state["year"]
@@ -155,44 +155,14 @@ class Forecaster:
         
     return best_model
 
-  def train_and_forecast(self):
-    
-    train_window = 365  # Days to use for training
-    forecast_horizon = self.get_forecast_horizon_days()  # Days to predict
-    series = self.timeseries
-    model = self.model
-
-    # Split the series into initial training and the rest for incremental predictions
-    initial_train_series = series[:train_window]
-    test_series = series[train_window:]
-
-    # Fit the model on the initial training set
-    model.fit(initial_train_series)
-
-    # Store predictions and ground truth for evaluation
-    predictions = []
-    ground_truth = []
-
-    # Incremental training and prediction
-    forecast_cycles = int((len(test_series) - forecast_horizon)/forecast_horizon)
-    for i in range(forecast_cycles):
-        i_mul_forecast_horizon = i * forecast_horizon
-
-        # Get the current prediction window
-        current_train_series = series[: train_window + i_mul_forecast_horizon]
-        future_series = series[train_window + i_mul_forecast_horizon : train_window + i_mul_forecast_horizon + forecast_horizon]
-
-        # Update the model (re-fit on the extended series if necessary)
-        model.fit(current_train_series)
-
-        # Predict the next `forecast_horizon` steps
-        prediction = model.predict(forecast_horizon)
-        predictions.append(prediction)
-        ground_truth.append(future_series)
-
-    # Concatenate predictions into a single TimeSeries
-    self.predicted_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), predictions)
-    self.actual_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), ground_truth)
+  def generate_historical_forecasts(self):
+    historical_forecast = self.model.historical_forecasts(
+      self.timeseries,
+      forecast_horizon=self.get_forecast_horizon_days(),
+      start=365
+    )
+    self.predicted_series = historical_forecast
+    self.actual_series = self.timeseries
 
   def plot(self):
     actual_df = self.actual_series.pd_dataframe()
@@ -201,6 +171,8 @@ class Forecaster:
     combined_df = actual_df.rename(columns={"Value": "Actual"})
     combined_df["Predicted"] = None
     combined_df.loc[predicted_df.index, "Predicted"] = round(predicted_df["Value"])
+    combined_df = combined_df.iloc[366:, :]
+    combined_df.fillna(0, inplace=True)
 
     st.line_chart(combined_df)
 

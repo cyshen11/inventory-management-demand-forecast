@@ -75,7 +75,7 @@ def simulation_forecast(df, lead_time_data):
   BaselineForecaster(df)
 
   forecaster = Forecaster(df)
-  forecaster.score()
+  # forecaster.score()
   forecaster.plot()
   
   dataframe_models_result()
