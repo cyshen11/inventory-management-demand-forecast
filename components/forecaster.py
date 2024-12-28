@@ -4,7 +4,7 @@ import pandas as pd
 from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
-from darts.models import StatsForecastAutoTheta
+from darts.models import StatsForecastAutoTheta, KalmanForecaster, RNNModel
 from darts.utils.utils import ModelMode, SeasonalityMode
 from functools import reduce
 from darts.metrics import mae, mape
@@ -56,9 +56,19 @@ class Forecaster:
       return StatsForecastAutoETS()
     elif model =="Theta":
       return StatsForecastAutoTheta()
+    elif model =="Kalman Filter":
+      return KalmanForecaster()
     elif model == "Random Forest":
       param_grid = self.define_param_grid()
       return self.optimize_model(param_grid)
+    elif model == "RNN":
+      return RNNModel(
+        input_chunk_length=290, # 80% of 365 days
+        training_length=290,  # 80% of 365 days
+        output_chunk_length=7,
+        n_epochs=20,
+        model_name="RNN",
+      )
 
   def define_param_grid(self):
     model = st.session_state["forecast_model"]
@@ -76,7 +86,26 @@ class Forecaster:
             'output_chunk_length': [1, 7],  # Reduced forecast horizons
             'n_jobs': [-1]  # Use all available cores
         }
+    elif model == "Gradient Boosting":
+        return {
+            'lags': [[-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],
+            'output_chunk_length': [1, 7],  # Forecast horizon
+            'n_jobs': [-1],  # Use all cores
+            'num_leaves': [31, 63],  # Control model complexity
+            'learning_rate': [0.05, 0.1],  # Learning rate
+            'n_estimators': [100, 200],  # Number of boosting iterations
+            'max_depth': [-1],  # Unlimited depth
+            'min_data_in_leaf': [20, 50],  # Minimum number of records in leaf
+            'feature_fraction': [0.8, 1.0],  # Feature subsampling for each tree
+            'bagging_fraction': [0.8, 1.0],  # Row subsampling
+            'bagging_freq': [5],  # Bagging frequency
+            'objective': ['regression'],  # For time series regression
+            'metric': ['mae'],  # Evaluation metric
+            'boosting_type': ['gbdt'],  # Traditional Gradient Boosting
+            'verbose': [-1]  # Suppress logging
+        }
     
+
   def optimize_model(self, param_grid):
     start_date = pd.to_datetime(f'{st.session_state["year"]}-01-01')
     end_date = pd.to_datetime(f'{st.session_state["year"]}-12-31')
@@ -99,6 +128,8 @@ class Forecaster:
           model = LinearRegressionModel(**params)
         elif forecast_model == "Random Forest":
           model = RandomForest(**params)
+        elif forecast_model == "Gradient Boosting":
+          model = XGBModel(**params)
         
         # try:
         # Train model
