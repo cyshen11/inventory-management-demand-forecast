@@ -76,3 +76,24 @@ def dataframe_products_not_filled(order_id):
     # if event_product.selection.rows:
     #     st.session_state['product_id'] = df.iloc[event_product.selection.rows[0]]["ProductID"]
     #     st.session_state['product_number'] = df.iloc[event_product.selection.rows[0]]["ProductNumber"]
+
+def dataframe_models_result():
+    st.subheader("Models Result")
+    st.markdown("Sorted by MAE in increasing order")
+
+    models_result = st.session_state['models_result']
+    df = pd.DataFrame.from_dict(models_result)
+    df = df.T
+    df = df.reset_index()
+    df.columns = ["Model", "MAE", "MAPE"]
+    df.sort_values(by="MAE", inplace=True)
+    # df["Metric"] = ["MAE", "MAPE"]
+    st.dataframe(
+        df, 
+        hide_index=True, 
+        column_config={
+            "Model": st.column_config.TextColumn(
+                "Model",
+                width="medium"
+        )}
+    )

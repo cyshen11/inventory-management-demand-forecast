@@ -6,6 +6,7 @@ from components.dataset import *
 from components.metrics import *
 from components.filters import *
 from components.forecaster import *
+from components.dataframe import dataframe_models_result
 
 @st.fragment
 def simulation(lead_time_data):
@@ -43,6 +44,22 @@ def simulation_forecast(df, lead_time_data):
   forecast_year = st.session_state["year"] + 1
   st.subheader(f"Forecast for {forecast_year}")
 
+  # Initialization
+  
+  if 'models_result' not in st.session_state:
+      st.session_state['models_result'] = {}
+  if 'forecast_horizon' not in st.session_state:
+      st.session_state['forecast_horizon'] = None
+
+  if 'previous_horizon' not in st.session_state:
+    st.session_state['previous_horizon'] = st.session_state.get('forecast_horizon')
+  # Check if forecast horizon changed
+  if st.session_state['previous_horizon'] != st.session_state['forecast_horizon']:
+    # Reset the models_result dictionary
+    st.session_state['models_result'] = {}
+  # Update the previous horizon
+  st.session_state['previous_horizon'] = st.session_state['forecast_horizon']
+  
   col1, col2, col3 = st.columns(3)
   # col4, col5, col6 = st.columns(3)
   # col7, col8, col9 = st.columns(3)
@@ -61,3 +78,4 @@ def simulation_forecast(df, lead_time_data):
   forecaster.score()
   forecaster.plot()
   
+  dataframe_models_result()

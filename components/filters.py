@@ -23,6 +23,10 @@ def dynamic_filters_product(df):
     df['Year'] = df['Date'].dt.year
     dynamic_filters = DynamicFilters(df, filters=['Product_Code', 'Year'])
     dynamic_filters.display_filters(location='sidebar')
+    if 'models_result' not in st.session_state:
+      st.session_state['models_result'] = {}
+    else:
+      st.session_state['models_result'] = {}
     return dynamic_filters
 
 def selectbox_week():

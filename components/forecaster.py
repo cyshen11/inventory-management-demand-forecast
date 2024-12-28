@@ -214,6 +214,14 @@ class Forecaster:
       delta_color="inverse"
     )
 
+    model = st.session_state["forecast_model"]
+    st.session_state['models_result'].update({
+      model: {
+        'MAE': mae, 
+        'MAPE': f"{mape}%"
+      }
+    })
+
 class BaselineForecaster:
   def __init__(self, df):
     self.timeseries = self.prepare_timeseries(df)
@@ -305,3 +313,11 @@ class BaselineForecaster:
 
     st.session_state['mae_baseline'] = mae
     st.session_state['mape_baseline'] = mape
+
+    model = "Naive Drift"
+    st.session_state['models_result'].update({
+      model: {
+        'MAE': mae, 
+        'MAPE': f"{mape}%"
+      }
+    })
