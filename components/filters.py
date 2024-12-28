@@ -73,7 +73,7 @@ def selectbox_forecast_model(col, key):
         "Theta",
         "Random Forest"
     ]
-    st.session_state["forecast_model"] = col.selectbox("Select Models", models, key=key)
+    st.session_state["forecast_model"] = col.selectbox("Select Model", models, key=key)
 
 def selectbox_forecast_horizon(col, key):
     window = [
