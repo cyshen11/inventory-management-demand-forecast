@@ -128,8 +128,6 @@ class Forecaster:
           model = LinearRegressionModel(**params)
         elif forecast_model == "Random Forest":
           model = RandomForest(**params)
-        elif forecast_model == "Gradient Boosting":
-          model = XGBModel(**params)
         
         # try:
         # Train model
