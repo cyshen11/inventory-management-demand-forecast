@@ -194,20 +194,23 @@ class Forecaster:
     mae_baseline = st.session_state['mae_baseline']
     mape_baseline = st.session_state['mape_baseline']
 
+    mae_delta = float(mae - mae_baseline) / mae_baseline
+    mape_delta = float(mape - mape_baseline) / mape_baseline
+
     col1, col2= st.columns(2)
     # col1.metric("Bias", f"{bias}", border=True)
     col1.metric(
       "MAE (compared to baseline Naive Drift)", 
       f"{mae}", 
       border=True, 
-      delta=mae - mae_baseline,
+      delta=f"{round(mae_delta * 100)}%",
       delta_color="inverse"
     )
     col2.metric(
       "MAPE (compared to baseline Naive Drift)", 
       f"{mape}%", 
       border=True, 
-      delta=mape - mape_baseline,
+      delta=f"{round(mape_delta)}%",
       delta_color="inverse"
     )
 
