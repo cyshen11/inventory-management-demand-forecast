@@ -5,9 +5,7 @@ from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
 from darts.models import StatsForecastAutoTheta, KalmanForecaster, RNNModel
-from darts.metrics import mae, mape
 from functools import reduce
-from darts.metrics import mae, mape
 from sklearn.model_selection import ParameterGrid
 
 class Forecaster:
@@ -157,7 +155,7 @@ class Forecaster:
     historical_forecast = self.model.historical_forecasts(
       self.timeseries,
       forecast_horizon=self.get_forecast_horizon_days(),
-      start=365
+      start=365 - self.get_forecast_horizon_days() + 2
     )
     year = st.session_state["year"] + 1
     split_point = pd.to_datetime(f'{year}-01-01')
@@ -189,7 +187,7 @@ class Forecaster:
     predicted_values = self.predicted_series.pd_dataframe()["Value"]
     non_zero_indices = np.where(actual_values != 0)[0]
 
-    # bias = round(np.mean(predicted_values - actual_values))
+    bias = round(np.mean(predicted_values - actual_values))
     mae = round(np.mean(np.abs(predicted_values - actual_values)))
     mape = round(np.mean(np.abs((predicted_values[non_zero_indices] - actual_values[non_zero_indices]) / actual_values[non_zero_indices])) * 100)
 
@@ -228,7 +226,7 @@ class BaselineForecaster:
   def __init__(self, df):
     self.timeseries = self.prepare_timeseries(df)
     self.model = self.prepare_model()
-    self.train_and_forecast()
+    self.generate_historical_forecasts()
     self.score()
 
   def prepare_timeseries(self, df):
@@ -256,44 +254,16 @@ class BaselineForecaster:
   def prepare_model(self):
     return NaiveDrift()
     
-  def train_and_forecast(self):
-    
-    train_window = 365  # Days to use for training
-    forecast_horizon = self.get_forecast_horizon_days()  # Days to predict
-    series = self.timeseries
-    model = self.model
-
-    # Split the series into initial training and the rest for incremental predictions
-    initial_train_series = series[:train_window]
-    test_series = series[train_window:]
-
-    # Fit the model on the initial training set
-    model.fit(initial_train_series)
-
-    # Store predictions and ground truth for evaluation
-    predictions = []
-    ground_truth = []
-
-    # Incremental training and prediction
-    forecast_cycles = int((len(test_series) - forecast_horizon)/forecast_horizon)
-    for i in range(forecast_cycles):
-        i_mul_forecast_horizon = i * forecast_horizon
-
-        # Get the current prediction window
-        current_train_series = series[: train_window + i_mul_forecast_horizon]
-        future_series = series[train_window + i_mul_forecast_horizon : train_window + i_mul_forecast_horizon + forecast_horizon]
-
-        # Update the model (re-fit on the extended series if necessary)
-        model.fit(current_train_series)
-
-        # Predict the next `forecast_horizon` steps
-        prediction = model.predict(forecast_horizon)
-        predictions.append(prediction)
-        ground_truth.append(future_series)
-
-    # Concatenate predictions into a single TimeSeries
-    self.predicted_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), predictions)
-    self.actual_series = reduce(lambda x, y: x.concatenate(y, ignore_time_axis=True), ground_truth)
+  def generate_historical_forecasts(self):
+    historical_forecast = self.model.historical_forecasts(
+      self.timeseries,
+      forecast_horizon=self.get_forecast_horizon_days(),
+      start=365 - self.get_forecast_horizon_days() + 2
+    )
+    year = st.session_state["year"] + 1
+    split_point = pd.to_datetime(f'{year}-01-01')
+    self.predicted_series = historical_forecast
+    self.actual_series = self.timeseries.drop_before(split_point)
 
   def get_forecast_horizon_days(self):
     forecast_horizon = st.session_state["forecast_horizon"]
