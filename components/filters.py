@@ -77,4 +77,9 @@ def selectbox_forecast_horizon(col, key):
         "Week",
         "Month"
     ]
-    st.session_state["forecast_horizon"] = col.selectbox("Select Forecasting Horizon", window, key=key)
+    st.session_state["forecast_horizon"] = col.selectbox(
+        "Select Forecasting Horizon", 
+        window, 
+        key=key,
+        index=1
+    )
