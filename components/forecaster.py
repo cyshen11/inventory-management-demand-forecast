@@ -119,10 +119,11 @@ class Forecaster:
     return best_model
 
   def generate_historical_forecasts(self):
+    forecast_horizon=self.get_forecast_horizon_days()
     historical_forecast = self.model.historical_forecasts(
       self.timeseries,
-      forecast_horizon=self.get_forecast_horizon_days(),
-      start=365 - self.get_forecast_horizon_days() + 1
+      forecast_horizon=forecast_horizon,
+      start=365 - forecast_horizon + 1
     )
     year = st.session_state["year"]
     split_point = pd.to_datetime(f'{year}-12-31')
