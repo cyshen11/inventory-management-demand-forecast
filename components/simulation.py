@@ -66,16 +66,19 @@ def simulation_forecast(df, lead_time_data):
 
   selectbox_forecast_horizon(col1, 20002)
   selectbox_forecast_model(col2, 20003)
+  
   # ss = input_ss(col4, 20004)
   # rop = input_rop(col5, 20005)
   # q = input_oq(col6, 20006)
   # input_avg_lead_time(col7, lead_time_data, 20007)
   # L = round(st.session_state["avg_lead_time"])
 
-  BaselineForecaster(df)
-
-  forecaster = Forecaster(df)
-  forecaster.score()
-  forecaster.plot()
-  
-  dataframe_models_result()
+  if forecast_year not in df['Date'].dt.year.unique():
+    forecaster = FutureForecaster(df)
+    forecaster.plot()
+  else:
+    BaselineForecaster(df)
+    forecaster = Forecaster(df)
+    forecaster.score()
+    forecaster.plot()
+    dataframe_models_result()
