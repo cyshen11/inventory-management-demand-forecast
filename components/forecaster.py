@@ -5,8 +5,7 @@ from darts import TimeSeries
 from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
 from darts.models import StatsForecastAutoTheta, KalmanForecaster, RNNModel
-from functools import reduce
-from sklearn.model_selection import ParameterGrid
+import darts.metrics
 
 class Forecaster:
   def __init__(self, df):
@@ -73,7 +72,7 @@ class Forecaster:
     if model == "Linear Regression":
       return {
         'lags': [[-1], [-1,-2], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Different lag values to test
-        'output_chunk_length': [1, 7, 30],  # Different forecast horizons
+        'output_chunk_length': [self.get_forecast_horizon_days()],  # Different forecast horizons
         'n_jobs': [-1],  # Use all available cores
       }
     elif model == "Random Forest":
@@ -81,70 +80,38 @@ class Forecaster:
             'n_estimators': [50, 100],  # Reduced number of options for tree count
             'max_depth': [10, 20],  # Reduced depth options
             'lags': [[-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],  # Key lag values
-            'output_chunk_length': [1, 7],  # Reduced forecast horizons
+            'output_chunk_length': [self.get_forecast_horizon_days()],  # Reduced forecast horizons
             'n_jobs': [-1]  # Use all available cores
-        }
-    elif model == "Gradient Boosting":
-        return {
-            'lags': [[-1], [-1,-2,-3], [-1,-2,-3,-4,-5,-6,-7]],
-            'output_chunk_length': [1, 7],  # Forecast horizon
-            'n_jobs': [-1],  # Use all cores
-            'num_leaves': [31, 63],  # Control model complexity
-            'learning_rate': [0.05, 0.1],  # Learning rate
-            'n_estimators': [100, 200],  # Number of boosting iterations
-            'max_depth': [-1],  # Unlimited depth
-            'min_data_in_leaf': [20, 50],  # Minimum number of records in leaf
-            'feature_fraction': [0.8, 1.0],  # Feature subsampling for each tree
-            'bagging_fraction': [0.8, 1.0],  # Row subsampling
-            'bagging_freq': [5],  # Bagging frequency
-            'objective': ['regression'],  # For time series regression
-            'metric': ['mae'],  # Evaluation metric
-            'boosting_type': ['gbdt'],  # Traditional Gradient Boosting
-            'verbose': [-1]  # Suppress logging
         }
     
 
   def optimize_model(self, param_grid):
-    start_date = pd.to_datetime(f'{st.session_state["year"]}-01-01')
-    end_date = pd.to_datetime(f'{st.session_state["year"]}-12-31')
-    timeseries_cy = self.timeseries.slice(start_date, end_date)
+    
+    year = st.session_state["year"]
+    split_point = pd.to_datetime(f'{year}-11-01')
+    series = self.timeseries.drop_after(split_point)
 
-    # Split data for validation
-    train_cutoff = int(len(timeseries_cy) * 0.8)
-    train_series = timeseries_cy[:train_cutoff]
-    val_series = timeseries_cy[train_cutoff:]
+    split_point_1 = pd.to_datetime(f'{year}-10-31')
+    split_point_2 = pd.to_datetime(f'{year + 1}-01-01')
+    val_series = self.timeseries.drop_before(split_point_1).drop_after(split_point_2)
 
-    best_mae = float('inf')
-    best_model = None
-    best_params = None
+    args = {
+      "parameters": param_grid,
+      "series": series,
+      "val_series": val_series,
+      "n_jobs": -1,
+      "metric": darts.metrics.mae,
+      "show_warnings": False  
+    }
 
     forecast_model = st.session_state["forecast_model"]
-
-    # Grid search through parameters
-    for params in ParameterGrid(param_grid):
-        if forecast_model == "Linear Regression":
-          model = LinearRegressionModel(**params)
-        elif forecast_model == "Random Forest":
-          model = RandomForest(**params)
-        
-        # try:
-        # Train model
-        model.fit(train_series)
-        
-        # Make predictions
-        predictions = model.predict(len(val_series))
-        
-        # Calculate metrics
-        current_mae = mae(val_series, predictions)
-        
-        # Update best model if current one is better
-        if current_mae < best_mae:
-            best_mae = current_mae
-            best_model = model
-            best_params = params
-                
-        # except Exception as e:
-        #     continue
+    if forecast_model == "Linear Regression":
+      gridsearch = LinearRegressionModel.gridsearch(**args)
+    elif forecast_model == "Random Forest":
+      gridsearch = RandomForest.gridsearch(**args)
+      
+    best_model = gridsearch[0]
+    best_params = gridsearch[1]
 
     with st.popover("Best parameters"):
       st.write(best_params)
@@ -155,10 +122,10 @@ class Forecaster:
     historical_forecast = self.model.historical_forecasts(
       self.timeseries,
       forecast_horizon=self.get_forecast_horizon_days(),
-      start=365 - self.get_forecast_horizon_days() + 2
+      start=365 - self.get_forecast_horizon_days() + 1
     )
-    year = st.session_state["year"] + 1
-    split_point = pd.to_datetime(f'{year}-01-01')
+    year = st.session_state["year"]
+    split_point = pd.to_datetime(f'{year}-12-31')
     self.predicted_series = historical_forecast
     self.actual_series = self.timeseries.drop_before(split_point)
 
