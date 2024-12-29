@@ -48,16 +48,16 @@ def input_avg_sales(col, df, key):
     st.session_state["avg_sales"] = col.number_input(label, value=avg_sales, key=key)
 
 def input_holding_cost(col, key):
-   st.session_state["holding_cost"] = col.number_input("Holding cost per unit per year (H)", value=0.20, key=key)
+   st.session_state["holding_cost"] = col.number_input("Specify Holding cost / unit / year (H)", value=0.20, key=key)
 
 def input_stockout_cost(col, key):
-   st.session_state["stockout_cost"] = col.number_input("Stockout cost per unit (p)", value=0.20, key=key)
+   st.session_state["stockout_cost"] = col.number_input("Specify Stockout cost per unit (p)", value=0.20, key=key)
 
 def input_ss(col, key=None):
-   return col.number_input("Safety Stock (SS)", value=0, key=key)
+   return col.number_input("Specify Safety Stock (SS)", value=0, key=key)
 
 def input_rop(col, key=None):
-   return col.number_input("Reorder Point (ROP)", value=0, key=key)
+   return col.number_input("Specify Reorder Point (ROP)", value=0, key=key)
 
 def input_oq(col, key=None):
-   return col.number_input("Order Quantity (Q)", value=0, key=key)
+   return col.number_input("Specify Order Quantity (Q)", value=0, key=key)
