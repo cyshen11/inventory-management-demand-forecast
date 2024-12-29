@@ -127,7 +127,7 @@ class Forecaster:
     actual_df = self.actual_series.pd_dataframe()
     predicted_df = self.predicted_series.pd_dataframe()
 
-    combined_df = predicted_df.rename(columns={"Value": "Predicted"})
+    combined_df = predicted_df.rename(columns={"Value": "Forecast"})
     combined_df["Actual"] = 0
     combined_df.loc[actual_df.index, "Actual"] = round(actual_df["Value"])
     combined_df.fillna(0, inplace=True)
