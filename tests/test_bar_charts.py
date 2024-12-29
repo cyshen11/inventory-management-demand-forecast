@@ -1,7 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 """Test cases for bar chart components"""
 import pandas as pd
 import pytest
