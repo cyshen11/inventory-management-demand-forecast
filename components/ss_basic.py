@@ -18,13 +18,13 @@ def eoq():
 
 def rop():
   col1, col2, col3 = st.columns(3)
-  avg_daily_sales = col1.number_input("Average daily sales (AS)", value=st.session_state["avg_demand"])
+  avg_daily_sales = col1.number_input("Specify Average Daily Sales (AS)", value=st.session_state["avg_demand"])
   st.session_state['avg_daily_sales'] = avg_daily_sales
   
-  delivery_lead_time = col2.number_input("Lead Time (days)", value=20)
+  delivery_lead_time = col2.number_input("Specify Lead Time (days)", value=20)
   st.session_state['delivery_lead_time'] = delivery_lead_time
 
-  nb_safety_days = col3.number_input("Number of safety days", value=5)
+  nb_safety_days = col3.number_input("Specify Number of Safety Days", value=5)
 
   safety_stock = round(avg_daily_sales * nb_safety_days)
   st.session_state["safety_stock"] = safety_stock
