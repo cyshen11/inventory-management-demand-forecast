@@ -101,6 +101,8 @@ class DatasetLeadTime:
         """
         df["Ordered_Date"] = pd.to_datetime(df["Ordered_Date"])
         df["Received_Date"] = pd.to_datetime(df["Received_Date"])
+        df = df.loc[df["Ordered_Date"] == df["Ordered_Date"]]
+        df = df.loc[df["Received_Date"] == df["Received_Date"]]
 
         product_code = filters["Product_Code"][0]
         year = filters["Year"][0]
