@@ -5,8 +5,9 @@ import pandas as pd
 
 def sidebar():
 
-  with st.sidebar.expander("## 1. Choose data to use"):
+  with st.sidebar.expander("# 1. Choose data to use"):
     data_option = st.segmented_control("", options=["Upload data", "Use sample dataset"])
+    st.session_state["data_option"] = data_option
 
     if data_option == "Upload data":
       with open("data/csv/demand_template.csv", "rb") as file:
@@ -27,13 +28,15 @@ def sidebar():
       uploaded_file_lead_time = st.file_uploader("Choose a csv file with historical product lead time")
 
       if uploaded_file_demand is not None and uploaded_file_lead_time is not None:
-        pd.read_csv(uploaded_file_demand).to_csv("data/csv/demand_upload.csv", index=False)
-        pd.read_csv(uploaded_file_demand).to_csv("data/csv/lead_time_upload.csv", index=False)
+        with open("data/csv/demand_upload.csv", "wb") as f:
+          f.write(uploaded_file_demand.getbuffer())
+        with open("data/csv/lead_time_upload.csv", "wb") as f:
+          f.write(uploaded_file_lead_time.getbuffer())
 
-    else:
+      
+    with st.sidebar.expander("# 2. Choose product and year"):
       data = Dataset().data
-  
-    dynamic_filters = dynamic_filters_product(data)
-    filtered_data = dynamic_filters.filter_df()
+      dynamic_filters = dynamic_filters_product(data)
+      filtered_data = dynamic_filters.filter_df()
 
   return dynamic_filters, filtered_data

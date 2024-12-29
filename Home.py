@@ -15,13 +15,13 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def main():
-    st.title("Inventory Management")
-    st.subheader("Demand Trend")
+    st.title("Inventory Management & Demand Forecast")
 
     dynamic_filters, filtered_data = sidebar()
     filters = st.session_state[dynamic_filters.filters_name]
 
     if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
+        st.subheader("Demand Trend")
         st.session_state['year'] = filters['Year'][0]
         st.session_state['product_code'] = filters['Product_Code'][0]
 

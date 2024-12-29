@@ -1,9 +1,16 @@
 """Dataset"""
 import pandas as pd
+import streamlit as st
 
 class Dataset:
   def __init__(self):
-    df = pd.read_csv("data/csv/Historical Product Demand.csv")
+    data_option = st.session_state["data_option"]
+    if data_option == "Upload data":
+      filename = "demand_upload"
+    else:
+      filename = "demand_sample"
+    
+    df = pd.read_csv(f"data/csv/{filename}.csv")
     self.data = self.prepare_data(df)
 
   def prepare_data(self, df):
@@ -16,7 +23,13 @@ class Dataset:
   
 class DatasetLeadTime:
   def __init__(self, filters):
-    df = pd.read_csv("data/csv/Lead Time.csv")
+    data_option = st.session_state["data_option"]
+    if data_option == "Upload data":
+      filename = "lead_time_upload"
+    else:
+      filename = "lead_time_sample"
+    
+    df = pd.read_csv(f"data/csv/{filename}.csv")
     self.data = self.prepare_data(df, filters)
 
   def prepare_data(self, df, filters):
