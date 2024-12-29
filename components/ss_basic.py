@@ -4,10 +4,10 @@ from components.line_charts import inventory_chart
 def eoq():
   col1, col2 = st.columns(2)
   col3, col4 = st.columns(2)
-  D = col1.number_input("Demand per year (D)", value=st.session_state["demand_per_year"])
-  K = col2.number_input("Order Cost per purchase order (K)", value=20)
-  H = col3.number_input("Holding cost per unit per year (H)", value=0.2)
-  lot_size = col4.number_input("Lot size", value=100)
+  D = col1.number_input("Specify Demand per year (D)", value=st.session_state["demand_per_year"])
+  K = col2.number_input("Specify Order Cost per purchase order (K)", value=20)
+  H = col3.number_input("Specify Holding cost per unit per year (H)", value=0.2)
+  lot_size = col4.number_input("Specify Lot size", value=100)
   st.session_state["lot_size"] = lot_size
 
   Q = (2*(D*K)/H)**(1/2)
