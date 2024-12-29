@@ -20,13 +20,23 @@ def dataframe_models_result():
     st.subheader("Models Result")
     st.markdown("Sorted by MAE in increasing order")
 
-    models_result = st.session_state["models_result"]
+    models_result = st.session_state.get("models_result", {})
     
-    df = pd.DataFrame.from_dict(models_result)
-    df = df.T
-    df = df.reset_index()
-    df.columns = ["Model", "MAE", "MAPE"]
-    df.sort_values(by="MAE", inplace=True)
+    # Create empty DataFrame with correct columns
+    empty_df = pd.DataFrame(columns=["Model", "MAE", "MAPE"])
+    
+    # Handle invalid or empty data
+    if not isinstance(models_result, dict) or not models_result:
+        df = empty_df
+    else:
+        try:
+            df = pd.DataFrame.from_dict(models_result)
+            df = df.T
+            df = df.reset_index()
+            df.columns = ["Model", "MAE", "MAPE"]
+            df.sort_values(by="MAE", inplace=True)
+        except (ValueError, AttributeError, TypeError):
+            df = empty_df
     
     st.dataframe(
         df,
