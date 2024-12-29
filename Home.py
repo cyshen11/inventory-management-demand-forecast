@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def main():
-    st.title("Inventory Management & Demand Forecast")
+    st.title("Inventory Optimization & Demand Forecast")
 
     dynamic_filters, filtered_data = sidebar()
     filters = st.session_state[dynamic_filters.filters_name]
