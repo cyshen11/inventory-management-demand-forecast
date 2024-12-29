@@ -6,7 +6,7 @@ import pandas as pd
 def sidebar():
 
   with st.sidebar.expander("# 1. Choose data to use"):
-    data_option = st.segmented_control("", options=["Upload data", "Use sample dataset"])
+    data_option = st.segmented_control("Data:", options=["Upload data", "Use sample dataset"])
     st.session_state["data_option"] = data_option
 
     if data_option == "Upload data":
