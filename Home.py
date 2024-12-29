@@ -30,7 +30,7 @@ def main():
         lead_time_data = DatasetLeadTime(filters).data
         lead_time_chart(lead_time_data)
 
-        with st.expander("Calculate EOQ"):
+        with st.expander("Calculate Economic Order Quantity (EOQ)"):
             eoq()
 
         with st.expander("Calculate Safety Stock and Reorder Point"):
