@@ -22,7 +22,7 @@ def selectbox_simulation_year(col, df):
 def dynamic_filters_product(df):
     df['Year'] = df['Date'].dt.year
     dynamic_filters = DynamicFilters(df, filters=['Product_Code', 'Year'])
-    dynamic_filters.display_filters(location='sidebar')
+    dynamic_filters.display_filters()
     if 'models_result' not in st.session_state:
       st.session_state['models_result'] = {}
     else:

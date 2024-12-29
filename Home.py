@@ -10,6 +10,7 @@ from components.ss_basic import *
 from components.ss_average_max import ss_average_max
 from components.ss_norm import *
 from components.simulation import *
+from components.sidebar import sidebar
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -17,9 +18,7 @@ def main():
     st.title("Inventory Management")
     st.subheader("Demand Trend")
 
-    data = Dataset().data
-    dynamic_filters = dynamic_filters_product(data)
-    filtered_data = dynamic_filters.filter_df()
+    dynamic_filters, filtered_data = sidebar()
     filters = st.session_state[dynamic_filters.filters_name]
 
     if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
