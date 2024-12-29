@@ -41,8 +41,9 @@ def simulation_actual_data(df, lead_time_data, key):
 
 @st.fragment
 def simulation_forecast(df, lead_time_data):
-  forecast_year = st.session_state["year"] + 1
-  st.subheader(f"Forecast for {forecast_year}")
+  year = st.session_state["year"]
+  forecast_year = year + 1
+  st.subheader(f"Forecast for {forecast_year} using {year} data")
 
   # Initialization
   
