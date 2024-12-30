@@ -1,7 +1,5 @@
 import streamlit as st
 from components.utils import *
-from components.dataset import Dataset
-import random
 
 def input_cycle_service_rate(col):
     st.session_state["cycle_service_rate"] = col.number_input(
