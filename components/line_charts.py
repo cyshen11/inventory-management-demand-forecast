@@ -14,7 +14,11 @@ def product_daily_inventory_levels_chart(df):
     
     st.session_state["demand_per_year"] = df["Order_Demand"].sum()
     st.session_state["avg_demand"] = round(df["Order_Demand"].sum() / 365)
-    st.session_state["max_demand"] = df["Order_Demand"].max()
+    st.session_state["max_demand"] = (
+        df["Order_Demand"].max() 
+        if not df.empty and "Order_Demand" in df.columns and not df["Order_Demand"].isna().all() 
+        else 0
+    )
 
 def simulation_chart(df_demand, year_sim, ss, rop, q, L):
     
