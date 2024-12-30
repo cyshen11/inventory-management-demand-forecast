@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from darts import TimeSeries
-from darts.models import NaiveDrift, NaiveMovingAverage, Croston, LinearRegressionModel
+from darts.models import NaiveDrift, NaiveMovingAverage, LinearRegressionModel
 from darts.models import StatsForecastAutoARIMA, StatsForecastAutoETS, RandomForest
 from darts.models import StatsForecastAutoTheta, KalmanForecaster, NBEATSModel
 import darts.metrics
@@ -42,8 +42,6 @@ class Forecaster:
       return NaiveDrift()
     elif model == f"3-{forecast_horizon}s Moving Average":
       return NaiveMovingAverage(input_chunk_length=3)
-    elif model == "Croston":
-      return Croston()
     elif model == "Linear Regression":
       param_grid = self.define_param_grid()
       return self.optimize_model(param_grid)
