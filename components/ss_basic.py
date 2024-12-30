@@ -1,5 +1,4 @@
 import streamlit as st
-from components.line_charts import inventory_chart
 
 def eoq():
   col1, col2 = st.columns(2)

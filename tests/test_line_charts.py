@@ -84,24 +84,6 @@ def test_product_fill_rate_chart(sample_inventory_df):
     assert (df_test['Fill_Rate'] <= 1.0).all()
     assert (df_test['Fill_Rate'] >= 0.0).all()
 
-def test_inventory_chart(mock_session_state):
-    """Test inventory_chart generates correct data structure."""
-    year = 2023
-    inventory_chart(year)
-    
-    # Verify session state variables are used
-    assert 'EOQ' in st.session_state
-    assert 'ROP' in st.session_state
-    assert 'safety_stock' in st.session_state
-    assert 'avg_daily_sales' in st.session_state
-    assert 'delivery_lead_time' in st.session_state
-
-@pytest.mark.parametrize("invalid_year", [2020.5, "invalid", -2023])
-def test_inventory_chart_invalid_year(invalid_year, mock_session_state):
-    """Test inventory_chart handles invalid year inputs."""
-    with pytest.raises(Exception):
-        inventory_chart(invalid_year)
-
 def test_simulation_chart_edge_cases(sample_demand_df):
     """Test simulation_chart with edge cases."""
     year_sim = 2023
