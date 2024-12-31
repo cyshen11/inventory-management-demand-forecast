@@ -30,7 +30,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/sentiment_monitor:latest
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/inventory-optimization-demand-forecast:latest
 
       # Part 2: Deploying the container image to the EC2 instance
       - name: executing remote ssh commands using ssh key
@@ -49,6 +49,6 @@ jobs:
             # Login to Docker Hub
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }} 
             # Pull down the container image from Docker Hub
-            docker pull  ${{ secrets.DOCKERHUB_USERNAME }}/sentiment_monitor:latest
+            docker pull  ${{ secrets.DOCKERHUB_USERNAME }}/inventory-optimization-demand-forecast:latest
             # Run the image in detached mode sending the container's output port 8009 to external port 8009 
-            docker run --detach -p 8009:8009  ${{ secrets.DOCKERHUB_USERNAME }}/sentiment_monitor:latest
+            docker run --detach -p 8501:8501  ${{ secrets.DOCKERHUB_USERNAME }}/inventory-optimization-demand-forecast:latest
