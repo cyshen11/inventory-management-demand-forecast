@@ -1,6 +1,7 @@
 import streamlit as st
 from components.dataset import Dataset
 from components.filters import *
+import pandas as pd
 
 
 def sidebar():
@@ -20,7 +21,7 @@ def sidebar():
     """
 
     # Step 1: Data Source Selection
-    with st.sidebar.expander("# 1. Choose data to use"):
+    with st.sidebar.expander("📂 1. Choose data to use"):
         # Toggle between upload and sample dataset options
         data_option = st.segmented_control(
             "Data:", options=["Upload data", "Use sample dataset"]
@@ -63,7 +64,7 @@ def sidebar():
                     f.write(uploaded_file_lead_time.getbuffer())
 
         # Step 2: Product and Year Selection
-        with st.sidebar.expander("# 2. Choose product and year"):
+        with st.sidebar.expander("🔍 2. Choose product and year"):
             # Load dataset based on previous selections
             data = Dataset().data
             # Create dynamic filters for product selection
@@ -71,4 +72,33 @@ def sidebar():
             # Apply selected filters to the dataset
             filtered_data = dynamic_filters.filter_df()
 
+        # (Optional) Step 3: Delete data
+        with st.sidebar.expander("🗑️ (Optional) 3. Delete uploaded data"):
+            # Button to delete all data
+            if st.button("Delete"):
+                delete_uploaded_data()
+                st.markdown("✅ Deleted successfully!")
+
     return dynamic_filters, filtered_data
+
+def delete_uploaded_data():
+    """
+    Resets the uploaded data files to empty DataFrames with predefined column structures.
+    This effectively clears any previously uploaded data while maintaining the expected file format.
+    """    
+    df_demand = pd.DataFrame({
+        "Product_Code": [],
+        "Warehouse": [],
+        "Product_Category": [],
+        "Date": [],
+        "Order_Demand": []
+    })
+    df_demand.to_csv("data/csv/demand_upload.csv")
+    
+    df_lead_time = pd.DataFrame({
+        "Product_Code": [],
+        "Ordered_Date": [],
+        "Received_Date": [],
+        "Lead_Time_Days": [],
+    })
+    df_lead_time.to_csv("data/csv/lead_time_upload.csv")  
