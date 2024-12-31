@@ -21,6 +21,7 @@ cycler==0.12.1
 Cython==3.0.11
 darts==0.32.0
 et_xmlfile==2.0.0
+execnet==2.1.1
 Faker==33.1.0
 fastparquet==2024.11.0
 filelock==3.16.1
@@ -79,6 +80,7 @@ pyod==2.0.3
 pyparsing==3.2.0
 pytest==8.3.4
 pytest-mock==3.14.0
+pytest-xdist==3.6.1
 python-dateutil==2.9.0.post0
 pytorch-lightning==2.5.0.post0
 pytz==2024.2
