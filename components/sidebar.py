@@ -79,6 +79,8 @@ def sidebar():
                 delete_uploaded_data()
                 st.markdown("✅ Deleted successfully!")
 
+        st.sidebar.markdown("v1.0.0")
+
     return dynamic_filters, filtered_data
 
 def delete_uploaded_data():
