@@ -2,7 +2,6 @@ from components.filters import *
 from components.inputs import *
 from components.utils import *
 import scipy.stats as stats
-import random
 
 @st.fragment
 def ss_cycle_service_rate(filtered_data, lead_time_data):
