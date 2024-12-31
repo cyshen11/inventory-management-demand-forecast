@@ -18,7 +18,7 @@ A comprehensive tool for inventory optimization and demand forecasting. This app
 
 ---
 
-#### How to Use:
+### How to Use:
 
 1. Upload your data or select sample data
 2. Select your product code and year from the sidebar
@@ -48,6 +48,13 @@ A comprehensive tool for inventory optimization and demand forecasting. This app
 - Cloud Services:
   - Storage: AWS EC2
   - Deployment: AWS EC2
+
+---
+
+### Credits:
+
+- Credits to FELIXZHAO for the [Historical Product Demand.csv](https://www.kaggle.com/datasets/felixzhao/productdemandforecasting) sample dataset
+- Credits to [AbcSupplyChain](https://abcsupplychain.com/safety-stock-formula-calculation/#Safety_Stock_Method_5_Normal_distribution_with_uncertainty_about_the_demand_and_the_lead_time_independent) for the safety stock formula
 
 ---
 
