@@ -18,6 +18,7 @@ def main():
 
     dynamic_filters, filtered_data = sidebar.sidebar()
     filters = st.session_state[dynamic_filters.filters_name]
+    print(filters)
 
     if len(filters['Product_Code']) > 0 and len(filters['Year']) > 0:
         st.subheader("Demand Trend")
