@@ -54,3 +54,5 @@ jobs:
             docker pull  ${{ secrets.DOCKERHUB_USERNAME }}/inventory-optimization-demand-forecast:latest
             # Run the image in detached mode sending the container's output port 8501 to external port 8501 
             docker run --detach -p 8501:8501  ${{ secrets.DOCKERHUB_USERNAME }}/inventory-optimization-demand-forecast:latest
+            # Logout SSH
+            logout
