@@ -21,6 +21,7 @@ def main():
     and demand forecasting.
     """
     st.title("Inventory Optimization & Demand Forecast")
+    st.markdown("Click the top left corner arrow icon to get started.")
 
     # Initialize sidebar filters and get filtered dataset
     dynamic_filters, filtered_data = sidebar.sidebar()
