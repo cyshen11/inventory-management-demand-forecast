@@ -62,6 +62,8 @@ def sidebar():
                 # Save lead time data
                 with open("data/csv/lead_time_upload.csv", "wb") as f:
                     f.write(uploaded_file_lead_time.getbuffer())
+        else:
+            pass
 
         # Step 2: Product and Year Selection
         with st.sidebar.expander("🔍 2. Choose product and year"):
