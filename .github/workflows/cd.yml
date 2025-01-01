@@ -35,7 +35,7 @@ jobs:
       # Part 2: Deploying the container image to the EC2 instance
       - name: executing remote ssh commands using ssh key
         # Action to ssh into the EC2
-        uses: appleboy/ssh-action@vmaster
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
