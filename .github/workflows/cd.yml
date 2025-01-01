@@ -35,14 +35,13 @@ jobs:
       # Part 2: Deploying the container image to the EC2 instance
       - name: executing remote ssh commands using ssh key
         # Action to ssh into the EC2
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@vmaster
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
           script: |
-            echo ok
+            echo ok > hello.txt
             # Stop any running containers
             # docker stop $(docker ps -a -q)
             # Delete the stopped containers 
