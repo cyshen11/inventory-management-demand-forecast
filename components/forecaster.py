@@ -301,7 +301,7 @@ class Forecaster:
             "MAPE (compared to baseline Naive Drift)",
             f"{mape}%",
             border=True,
-            delta=f"{round(mape_delta)}%",
+            delta=f"{round(mape_delta * 100)}%",
             delta_color="inverse",
         )
 
